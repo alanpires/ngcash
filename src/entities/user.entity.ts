@@ -1,7 +1,8 @@
 import { Account } from './account.entity';
 import { Entity, Column, PrimaryGeneratedColumn, OneToOne, JoinColumn } from "typeorm";
 import { MinLength } from "class-validator";
-import { PasswordValidator } from "../validators/PasswordValidator"
+import { PasswordValidator } from "../validators/PasswordValidator";
+
 
 @Entity("users")
 export class User {
@@ -14,10 +15,8 @@ export class User {
     })
     username: string
 
-    @Column()
-    @PasswordValidator({
-        message: 'Password must contain at least eight characters, have a number and an uppercase letter.'
-    })
+    @Column({select: false})
+    @PasswordValidator({message: 'Password must contain at least eight characters, have a number and an uppercase letter.'})
     password: string
 
     @OneToOne(() => Account)

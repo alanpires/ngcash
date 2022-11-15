@@ -9,8 +9,8 @@ export function PasswordValidator(validationOptions?: ValidationOptions) {
             options: validationOptions,
             validator: {
                 validate(value: any, args: ValidationArguments) {
-                    const regexNumber = '/([0-9])/g';
-                    const regexLetter = '/([A-Z])/g';
+                    const regexNumber = /[0-9]/;
+                    const regexLetter = /[A-Z]/;
                     // Verifica se o valor encontrado na regex é maior ou igual a zero, pois caso não encontre, o valor é -1
                     return typeof value === 'string' && value.length >= 8 && value.search(regexNumber) >= 0 && value.search(regexLetter) >= 0;
                 },
