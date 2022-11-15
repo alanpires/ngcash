@@ -6,6 +6,7 @@ const router = Router();
 
 export default (app: Express) => {
     router.post("/create", UserValidationMiddleware, UserController.createUser)
+    router.post("/login", UserController.login)
 
     app.use("/api/", router)
 }

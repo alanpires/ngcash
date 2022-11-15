@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { createUserService } from "../services/user.service";
+import { createUserService, loginService } from "../services/user.service";
 import { instanceToPlain } from "class-transformer";
 
 export class UserController {
@@ -11,5 +11,13 @@ export class UserController {
 
     return res.status(201).json(instanceToPlain(user));
 
+    }
+
+    static login = async (req: Request, res: Response) => {
+        const {username, password} = req.body;
+
+        const token = await loginService({username, password});
+
+        return res.status(200).json({token: token});
     }
 }
