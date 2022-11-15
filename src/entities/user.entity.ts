@@ -21,7 +21,7 @@ export class User {
     @IsString()
     password: string
 
-    @OneToOne(() => Account)
+    @OneToOne(() => Account, (account) => account.user)
     @JoinColumn()
     account: Account
 }

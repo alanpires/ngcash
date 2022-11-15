@@ -9,7 +9,7 @@ export class UserController {
 
     const user = await createUserService({username, password});
 
-    return res.status(201).json(instanceToPlain(user));
+    return res.status(201).json(user);
 
     }
 
