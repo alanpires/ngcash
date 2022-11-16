@@ -1,3 +1,4 @@
+import { User } from './../entities/user.entity';
 import { AccountRepository } from './../repositories/account.repository';
 import { AppError } from './../errors/appError';
 import { UserInterface, ReturnUserInterface } from '../interfaces/user.interface';
@@ -24,18 +25,30 @@ export const createUserService = async ({username, password}: UserInterface): Pr
         throw new AppError(400, "User already exists");
     }
 
-    const account = AccountRepository.create({
-        balance: 100
-    })
+    let userSaved: any = {};
+    let account: any = {};
+
+    try {
+        userSaved = UserRepository.create({
+            username: username,
+            password: hashedPassword
+        })
+    } catch (error) {
+        throw new AppError(400, "Error during create user")
+    }
+
+    //A conta só será criada se o usuário for criado com sucesso
+    try {
+        account = AccountRepository.create({
+        balance: 100  
+        })
+    } catch (error) {
+        throw new AppError(400, "Error during create Account")
+    }
+
+    userSaved.account = account;
 
     await AccountRepository.save(account);
-
-    const userSaved = UserRepository.create({
-        username: username,
-        password: hashedPassword,
-        account: account
-    })
-
     await UserRepository.save(userSaved);
 
     const user = {
@@ -76,7 +89,7 @@ export const loginService = async ({username, password}: UserInterface) => {
 
     const token = jwt.sign(
         {
-            id: user.id, 
+            userId: user.id,
             username: user.username,
             accountId: user.account.id
         }, 

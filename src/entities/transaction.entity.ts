@@ -12,9 +12,9 @@ export class Transaction {
     @CreateDateColumn()
     createdAt: Date;
 
-    @ManyToOne(() => Account, (account) => account.debitedAccounts)
-    debitAccount: Account
+    @ManyToOne(() => Account, (account) => account.cashOut)
+    debitedAccount: Account
 
-    @ManyToOne(() => Account, (account) => account.creditedAccounts)
-    creditAccount: Account
+    @ManyToOne(() => Account, (account) => account.cashIn)
+    creditedAccount: Account
 }

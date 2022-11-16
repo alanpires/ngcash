@@ -23,7 +23,7 @@ export const isAuthenticatedMiddleware = (req: Request, res: Response, next: Nex
         }
 
         req.user = {
-            id: decoded.id,
+            userId: decoded.userId,
             username: decoded.username,
             accountId: decoded.accountId
         }

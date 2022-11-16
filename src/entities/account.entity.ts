@@ -7,14 +7,14 @@ export class Account {
     @PrimaryGeneratedColumn("uuid")
     readonly id: string;
 
-    @Column()
+    @Column({select: false})
     balance: number
 
-    @OneToMany(() => Transaction, (transaction) => transaction.debitAccount)
-    debitedAccounts: Transaction[]
+    @OneToMany(() => Transaction, (transaction) => transaction.debitedAccount)
+    cashOut: Transaction[]
 
-    @OneToMany(() => Transaction, (transaction) => transaction.creditAccount)
-    creditedAccounts: Transaction[]
+    @OneToMany(() => Transaction, (transaction) => transaction.creditedAccount)
+    cashIn: Transaction[]
 
     @OneToOne(() => User, (user) => user.account)
     user: User

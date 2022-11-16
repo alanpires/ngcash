@@ -6,6 +6,7 @@ const router = Router();
 
 export default (app: Express) => {
     router.get("/accounts", isAuthenticatedMiddleware, AccountController.list);
+    // router.post("/accounts/filter", isAuthenticatedMiddleware, AccountController.filterTransactions)
 
     app.use("/api/", router)
 }
