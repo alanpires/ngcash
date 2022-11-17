@@ -1,3 +1,4 @@
+import { UserInterface } from './../../interfaces/user.interface';
 import * as express from "express";
 
 declare global {
@@ -7,7 +8,8 @@ declare global {
                 userId: string,
                 username: string,
                 accountId: string
-            }
+            },
+            validateUser: UserInterface
         }
     }
 }

@@ -5,11 +5,11 @@ import { instanceToPlain } from "class-transformer";
 export class UserController {
     static createUser = async (req: Request, res: Response) => {
 
-    const { username, password } = req.body;
+    const user = await createUserService(req.validateUser);
 
-    const user = await createUserService({username, password});
+    const {password, ...userWhithoutPassword} = user
 
-    return res.status(201).json(user);
+    return res.status(201).json(userWhithoutPassword);
 
     }
 
@@ -18,6 +18,6 @@ export class UserController {
 
         const token = await loginService({username, password});
 
-        return res.status(200).json({token: token});
+        return res.status(200).json(token);
     }
 }

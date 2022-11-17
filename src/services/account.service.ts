@@ -1,25 +1,31 @@
+import { AppError } from './../errors/appError';
 import { AccountRepository } from "../repositories/account.repository"
 
 export const findAccountService = async (accountId: string) => {
 
-    const findAccount = await AccountRepository.findOne({
-        where: {
-            id: accountId,
-        },
-        relations: {
-            cashIn: {
-                debitedAccount: true,
+    try {
+        const findAccount = await AccountRepository.findOne({
+            where: {
+                id: accountId,
             },
-            cashOut: {
-                creditedAccount: true
+            relations: {
+                cashIn: {
+                    debitedAccount: true,
+                },
+                cashOut: {
+                    creditedAccount: true
+                },
+                user: true
             },
-            user: true
-        },
-        select: {
-            id: true,
-            balance: true
-        }
-    })
-
-    return findAccount
+            select: {
+                id: true,
+                balance: true
+            }
+        })
+    
+        return findAccount
+    } catch (e) {
+        throw new AppError(400, "Error during find account in database")
+    }
+    
 }

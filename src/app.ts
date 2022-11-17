@@ -17,8 +17,4 @@ AppRouters(app);
 
 app.use(handleAppErrorMiddleware);
 
-const PORT = 3000;
-
-app.listen(PORT, () => {
-    console.log(`App rodando na porta ${PORT}`);
-})
+export default app;

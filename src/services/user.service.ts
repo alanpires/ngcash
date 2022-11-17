@@ -7,7 +7,7 @@ import { UserRepository } from '../repositories/user.repository';
 import jwt from "jsonwebtoken";
 require('dotenv').config();
 
-export const createUserService = async ({username, password}: UserInterface): Promise<ReturnUserInterface> =>  {
+export const createUserService = async ({username, password}: UserInterface): Promise<UserInterface> =>  {
     // hash da senha
     const hashedPassword = bcrypt.hashSync(password, 10);
 
@@ -25,11 +25,11 @@ export const createUserService = async ({username, password}: UserInterface): Pr
         throw new AppError(400, "User already exists");
     }
 
-    let userSaved: any = {};
+    let user: any = {};
     let account: any = {};
 
     try {
-        userSaved = UserRepository.create({
+        user = UserRepository.create({
             username: username,
             password: hashedPassword
         })
@@ -46,16 +46,10 @@ export const createUserService = async ({username, password}: UserInterface): Pr
         throw new AppError(400, "Error during create Account")
     }
 
-    userSaved.account = account;
+    user.account = account;
 
     await AccountRepository.save(account);
-    await UserRepository.save(userSaved);
-
-    const user = {
-        id: userSaved.id,
-        username: userSaved.username,
-        account: userSaved.account
-    }
+    await UserRepository.save(user);
 
     return user;
 
@@ -96,6 +90,6 @@ export const loginService = async ({username, password}: UserInterface) => {
         process.env.SECRET_KEY as string, 
         {expiresIn: process.env.EXPIRES_IN});
 
-    return token;
+    return {token: token};
 
 }

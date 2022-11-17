@@ -1,8 +1,10 @@
+import { Account } from './../entities/account.entity';
 import { TransactionRepository } from './../repositories/transaction.repository';
 import { AppError } from './../errors/appError';
 import { UserRepository } from './../repositories/user.repository';
 import { findAccountService } from "./account.service";
 import { AccountRepository } from '../repositories/account.repository';
+import { Between } from 'typeorm';
 
 export const createTransactionService = async (accountId: string, usernameCashOut: string, usernameCashIn: string, value: number) => {
 
@@ -99,4 +101,48 @@ export const createTransactionService = async (accountId: string, usernameCashOu
 
 }
 
-// export const filterTransactionService
+export const filterTransactionService = async (account: Account, start_date: string, end_date: string, cashIn: boolean, cashOut: boolean) => {
+    //Convertendo a data informada pelo usuário, pois o TypeORM faz a busca baseado no dia
+    // e horário
+    const startDateConverted = new Date(start_date);
+    const endDateConverted = new Date(end_date)
+    startDateConverted.setUTCHours(0, 0, 0, 0)
+    endDateConverted.setUTCHours(23, 59, 59, 999)
+        
+    const allTransactions: any = {
+        cashIn,
+        cashOut
+    }
+
+    const transactionsCashOut = await TransactionRepository.find({
+        where: {
+            createdAt: Between(startDateConverted, endDateConverted),
+            debitedAccount: account,
+        },
+        relations: {
+            creditedAccount: true
+        }
+    })
+
+    const transactionsCashIn = await TransactionRepository.find({
+        where: {
+            createdAt: Between(startDateConverted, endDateConverted),
+            creditedAccount: account
+        },
+        relations: {
+            debitedAccount: true
+        }
+    })
+    
+    allTransactions.cashOut = transactionsCashOut;
+    allTransactions.cashIn = transactionsCashIn;
+
+    if (cashOut && !cashIn) {
+        console.log("aqui")
+        return transactionsCashOut
+    } else if (cashIn && !cashOut) {
+        return transactionsCashIn
+    } else {
+        return allTransactions
+    }
+}
