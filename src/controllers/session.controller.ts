@@ -1,5 +1,5 @@
 import {Request, Response} from "express";
-import { loginService } from "../services/session.service";
+import { loginService } from "../services/session/session.service";
 
 export class SessionController {
     static login = async (req: Request, res: Response) => {

@@ -1,7 +1,7 @@
 import { Transaction } from './../../../entities/transaction.entity';
 import { AppError } from './../../../errors/appError';
-import { createUserService } from './../../../services/user.service';
-import { createTransactionService } from './../../../services/transaction.service';
+import { createUserService } from '../../../services/user/user.service';
+import { createTransactionService } from '../../../services/transaction/transaction.service';
 import { DataSource } from 'typeorm';
 import { AppDataSource } from '../../../data-source';
 
@@ -72,7 +72,7 @@ describe("Create a transaction", () => {
     });
 
     test("Checks if a transaction was successful", async () => {
-        //Create an user, the initial balance is 100
+        //Create an user
         const username = "joao";
         const password = "1234";
 

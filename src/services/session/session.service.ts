@@ -1,6 +1,6 @@
-import { UserRepository } from "../repositories/user.repository";
-import { UserInterface } from "../interfaces/user.interface";
-import { AppError } from "../errors/appError";
+import { UserRepository } from "../../repositories/user.repository";
+import { UserInterface } from "../../interfaces/user.interface";
+import { AppError } from "../../errors/appError";
 import * as bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 

@@ -1,8 +1,8 @@
-import { AccountRepository } from './../repositories/account.repository';
-import { AppError } from './../errors/appError';
-import { UserInterface, UserAccountInterface } from '../interfaces/user.interface';
+import { AccountRepository } from './../../repositories/account.repository';
+import { AppError } from './../../errors/appError';
+import { UserInterface, UserAccountInterface } from '../../interfaces/user.interface';
 import * as bcrypt from "bcryptjs";
-import { UserRepository } from '../repositories/user.repository';
+import { UserRepository } from '../../repositories/user.repository';
 require('dotenv').config();
 
 export const createUserService = async ({username, password}: UserInterface): Promise<UserAccountInterface> =>  {

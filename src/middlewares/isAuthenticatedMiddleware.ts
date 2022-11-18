@@ -12,7 +12,6 @@ export const isAuthenticatedMiddleware = (req: Request, res: Response, next: Nex
     const token = authorization.split(" ")[1];
 
     //usuário habilitou o campo, mas não informou nenhum token
-
     if (!token) {
         return res.status(400).json({detail: "Token cannot be blank"});
     }

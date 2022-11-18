@@ -1,7 +1,7 @@
 import { AppError } from './../../../errors/appError';
 import { DataSource } from 'typeorm';
 import { AppDataSource } from '../../../data-source';
-import { createUserService } from './../../../services/user.service';
+import { createUserService } from '../../../services/user/user.service';
 import * as bcrypt from "bcryptjs";
 
 jest.mock("uuid", () => {
