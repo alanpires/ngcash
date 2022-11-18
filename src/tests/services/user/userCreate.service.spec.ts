@@ -6,7 +6,7 @@ import * as bcrypt from "bcryptjs";
 
 jest.mock("uuid", () => {
     return {
-        v4: jest.fn(() => "uuid")
+        v4: jest.fn(() => "mockUUID")
     }
 })
 
@@ -34,11 +34,11 @@ describe("Create an user", () => {
 
         expect(newUser).toEqual(
             expect.objectContaining({
-                id: "uuid",
+                id: "mockUUID",
                 username,
                 account: {
                     balance: 100,
-                    id: "uuid"
+                    id: "mockUUID"
                 }
             })
         )

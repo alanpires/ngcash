@@ -1,7 +1,7 @@
 import { createUserService } from './../../../services/user.service';
 import { DataSource } from "typeorm";
 import { AppDataSource } from "../../../data-source";
-import { loginService } from "../../../services/user.service";
+import { loginService } from "../../../services/session.service";
 import { AppError } from '../../../errors/appError';
 
 // Teste unitário
