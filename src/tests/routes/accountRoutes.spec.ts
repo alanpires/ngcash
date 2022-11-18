@@ -10,7 +10,7 @@ jest.mock("uuid", () => {
 })
 
 //Teste de integração
-describe("Testing the middleware authentication with the account routes", () => {
+describe("Testing the account routes", () => {
     let connection: DataSource;
 
     beforeAll(async () => {
