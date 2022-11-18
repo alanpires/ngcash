@@ -3,7 +3,6 @@ import "express-async-errors";
 import "reflect-metadata";
 import { handleAppErrorMiddleware } from './middlewares/handleAppErrorMiddleware';
 import AppRouters from "./routes"
-import { registerSchema } from 'class-validator';
 
 const app = express();
 
