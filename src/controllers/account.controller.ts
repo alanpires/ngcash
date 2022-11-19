@@ -10,8 +10,7 @@ export class AccountController {
 
             #swagger.parameters['authorization'] = { 
                 in: 'header',
-                description: 'token',
-                required: true,
+                description: 'token'
             }
 
             #swagger.responses[200] = {

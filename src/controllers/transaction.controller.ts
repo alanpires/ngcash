@@ -11,8 +11,7 @@ export class TransactionController {
 
             #swagger.parameters['authorization'] = { 
                 in: 'header',
-                description: 'token',
-                required: true,
+                description: 'token'
             }
             
             #swagger.requestBody = {
@@ -48,8 +47,7 @@ export class TransactionController {
 
             #swagger.parameters['authorization'] = { 
                 in: 'header',
-                description: 'token',
-                required: true,
+                description: 'token'
             }
             
             #swagger.requestBody = {

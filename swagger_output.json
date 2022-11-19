@@ -3,9 +3,13 @@
   "info": {
     "version": "1.0.0",
     "title": "NG Cash API",
-    "description": "API que representa um sistema de transferência de valores entre usuários NG Cash"
+    "description": "API that represents a value transfer system between NG Cash users"
   },
-  "host": "",
+  "servers": [
+    {
+      "url": "http://localhost:3000/api"
+    }
+  ],
   "paths": {
     "/accounts": {
       "get": {
@@ -19,7 +23,6 @@
             "name": "authorization",
             "in": "header",
             "description": "token",
-            "required": true,
             "schema": {
               "type": "string"
             }
@@ -116,7 +119,6 @@
             "name": "authorization",
             "in": "header",
             "description": "token",
-            "required": true,
             "schema": {
               "type": "string"
             }
@@ -180,7 +182,6 @@
             "name": "authorization",
             "in": "header",
             "description": "token",
-            "required": true,
             "schema": {
               "type": "string"
             }

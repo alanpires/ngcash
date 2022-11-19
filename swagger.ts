@@ -4,11 +4,11 @@ const doc = {
   info: {
       version: '1.0.0',
       title: 'NG Cash API',
-      description: 'API que representa um sistema de transferência de valores entre usuários NG Cash',
+      description: 'API that represents a value transfer system between NG Cash users',
     },
-    host: '',
-    basePath: '/api/',
-    schemes: null,
+    host: 'localhost:3000',
+    basePath: '/api',
+    schemes: ['http'],
     consumes: ['application/json'], 
     produces: ['application/json'],
     securityDefinitions: {
