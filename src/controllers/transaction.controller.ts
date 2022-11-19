@@ -8,6 +8,12 @@ export class TransactionController {
             #swagger.tags = ['Transactions']
             #swagger.summary = 'create transaction'
             #swagger.description = 'In this endpoint it will be possible to create a transaction informing the user that he will receive the money and the value.'
+
+            #swagger.parameters['authorization'] = { 
+                in: 'header',
+                description: 'token',
+                required: true,
+            }
             
             #swagger.requestBody = {
             description: 'To create a transaction you must inform the username that will receive the money and the amount.',
@@ -39,6 +45,12 @@ export class TransactionController {
             #swagger.tags = ['Transactions']
             #swagger.summary = 'filter transaction'
             #swagger.description = 'On this endpoint it will be possible to filter a transaction by informing a start date and an end date.'
+
+            #swagger.parameters['authorization'] = { 
+                in: 'header',
+                description: 'token',
+                required: true,
+            }
             
             #swagger.requestBody = {
             description: 'To filter a transaction you must inform a start date and an end date, the cashIn and cashOut parameters are optional.',

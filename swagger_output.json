@@ -18,6 +18,8 @@
           {
             "name": "authorization",
             "in": "header",
+            "description": "token",
+            "required": true,
             "schema": {
               "type": "string"
             }
@@ -113,6 +115,8 @@
           {
             "name": "authorization",
             "in": "header",
+            "description": "token",
+            "required": true,
             "schema": {
               "type": "string"
             }
@@ -175,6 +179,8 @@
           {
             "name": "authorization",
             "in": "header",
+            "description": "token",
+            "required": true,
             "schema": {
               "type": "string"
             }

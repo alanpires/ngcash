@@ -8,6 +8,12 @@ export class AccountController {
             #swagger.summary = 'get account'
             #swagger.description = 'In this endpoint it will be possible to search the users account, where the cashIns and cashOuts that participated will be informed.'
 
+            #swagger.parameters['authorization'] = { 
+                in: 'header',
+                description: 'token',
+                required: true,
+            }
+
             #swagger.responses[200] = {
             description: 'OK',
             schema: {$ref: '#/definitions/GetAccount'}
