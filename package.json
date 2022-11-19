@@ -35,7 +35,7 @@
     "typescript": "^4.8.4"
   },
   "scripts": {
-    "dev": "ts-node-dev src/server.ts",
+    "dev": "ts-node-dev swagger.ts",
     "typeorm": "typeorm-ts-node-commonjs",
     "test": "NODE_ENV=test jest",
     "swagger-autogen": "ts-node-dev swagger.ts"

@@ -1,12 +1,31 @@
-import { AppError } from './../errors/appError';
-import { AccountRepository } from './../repositories/account.repository';
-import { TransactionRepository } from './../repositories/transaction.repository';
 import { createTransactionService, filterTransactionService } from '../services/transaction/transaction.service';
 import { Request, Response } from "express";
-import { Between } from "typeorm";
 
 export class TransactionController {
     static create = async (req: Request, res: Response) => {
+
+        /*
+            #swagger.tags = ['Transactions']
+            #swagger.summary = 'create transaction'
+            #swagger.description = 'In this endpoint it will be possible to create a transaction informing the user that he will receive the money and the value.'
+            
+            #swagger.requestBody = {
+            description: 'To create a transaction you must inform the username that will receive the money and the amount.',
+            required: true,
+            schema: { $ref: "#/definitions/TransactionCreate" }
+            }
+            
+            #swagger.responses[200] = {
+            description: 'OK',
+            schema: {$ref: '#/definitions/TransactionCreated'}
+            }
+            #swagger.responses[400]
+            #swagger.responses[500]
+            #swagger.security = [{
+               "bearerAuth": []
+            }]
+        */
+        
         const {accountId, username} = req.user;
         const {usernameCashIn, value} = req.body;
         
@@ -16,6 +35,29 @@ export class TransactionController {
     }
 
     static filterTransactions = async (req: Request, res: Response) => {
+        /*
+            #swagger.tags = ['Transactions']
+            #swagger.summary = 'filter transaction'
+            #swagger.description = 'On this endpoint it will be possible to filter a transaction by informing a start date and an end date.'
+            
+            #swagger.requestBody = {
+            description: 'To filter a transaction you must inform a start date and an end date, the cashIn and cashOut parameters are optional.',
+            required: true,
+            schema: { $ref: "#/definitions/TransactionFilter" }
+            }
+
+            #swagger.responses[200] = {
+            description: 'OK',
+            schema: {$ref: '#/definitions/TransactionFiltered'}
+            }
+
+            #swagger.responses[400]
+            #swagger.responses[500]
+            #swagger.security = [{
+               "bearerAuth": []
+            }]
+
+        */
         const {start_date, end_date, cashIn, cashOut} = req.body;
         const {accountId} = req.user;
 
@@ -25,3 +67,4 @@ export class TransactionController {
 
     }
 }
+
