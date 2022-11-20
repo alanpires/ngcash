@@ -6,7 +6,7 @@ const doc = {
       title: 'NG Cash API',
       description: 'API that represents a value transfer system between NG Cash users',
     },
-    host: 'localhost:3000',
+    host: 'localhost:9000',
     basePath: '/api',
     schemes: ['http'],
     consumes: ['application/json'], 

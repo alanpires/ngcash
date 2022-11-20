@@ -15,7 +15,7 @@ services:
       - POSTGRES_USER=$POSTGRES_USER
       - POSTGRES_PASSWORD=$POSTGRES_PASSWORD
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U $POSTGRES_USER -d $POSTGRES_DB"]
+      test: ["CMD-SHELL", "pg_isready -U $POSTGRES_USER --dbname=$POSTGRES_DB"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -26,7 +26,7 @@ services:
 
   nodejs:
     build:
-      context: .
+      context: ./api
       dockerfile: Dockerfile
     image: nodejs
     container_name: nodejs
@@ -40,14 +40,14 @@ services:
       - POSTGRES_PORT=$POSTGRES_PORT
       - POSTGRES_DB=$POSTGRES_DB
     ports:
-      - 3000:3000
+      - 9000:9000
     depends_on:
       postgres_database:
         condition: service_healthy
     command: sh -c "yarn typeorm migration:run -d src/data-source.ts && yarn swagger-autogen"
     volumes:
-      - .:/home/node/app
-      - node_modules:/home/node/app/node_modules
+      - ./api:/home/node/app
+      - ./api/node_modules:/home/node/app/node_modules
     networks:
       - app-network
     stdin_open: true
