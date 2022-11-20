@@ -8,10 +8,6 @@ const app = express();
 
 app.use(express.json());
 
-app.get("/", (req, res) => {
-    return res.json("Hello World!")
-})
-
 AppRouters(app);
 
 app.use(handleAppErrorMiddleware);

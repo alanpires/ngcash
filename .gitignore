@@ -141,4 +141,9 @@ dist
 # SvelteKit build / generate output
 .svelte-kit
 
-# End of https://www.toptal.com/developers/gitignore/api/node
+# Coverage reports
+coverage
+coverage/
+coverage/*
+
+# End of https://www.toptal.com/developers/gitignore/api/node# 
