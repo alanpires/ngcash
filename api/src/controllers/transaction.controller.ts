@@ -1,4 +1,4 @@
-import { createTransactionService, filterTransactionService } from '../services/transaction/transaction.service';
+import { createTransactionService, filterTransactionService, getAllTransactions } from '../services/transaction/transaction.service';
 import { Request, Response } from "express";
 
 export class TransactionController {
@@ -76,5 +76,37 @@ export class TransactionController {
         return res.status(200).json(transactions);
 
     }
+
+    static listTransactions = async (req: Request, res: Response) => {
+        /*
+            #swagger.tags = ['Transactions']
+            #swagger.summary = 'list transactions'
+            #swagger.description = 'On this endpoint it will be possible to list transactions.'
+
+            #swagger.parameters['authorization'] = { 
+                in: 'header',
+                description: 'token'
+            }
+
+            #swagger.responses[200] = {
+            description: 'OK',
+            schema: {$ref: '#/definitions/TransactionListed'}
+            }
+
+            #swagger.responses[400]
+            #swagger.responses[500]
+            #swagger.security = [{
+               "bearerAuth": []
+            }]
+
+        */
+        const {accountId} = req.user;
+
+        const transactions = await getAllTransactions(accountId);
+
+        return res.status(200).json(transactions);
+
+    }
+
 }
 

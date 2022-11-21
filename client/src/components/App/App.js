@@ -8,7 +8,7 @@ import useToken from './useToken';
 
 function App() {
     const {token, setToken} = useToken();
-
+ 
     if (!token) {
         return <Login setToken={setToken}/>
     }
@@ -19,7 +19,7 @@ function App() {
             <BrowserRouter>
                 <Switch>
                     <Route path='/dashboard'>
-                        <Dashboard/>
+                        <Dashboard userToken={token}/>
                     </Route>
                     <Route path='/preferences'>
                         <Preferences/>
@@ -27,6 +27,7 @@ function App() {
                 </Switch>
             </BrowserRouter>
         </div>
+        
     )
 }
 

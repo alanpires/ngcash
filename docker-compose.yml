@@ -47,7 +47,7 @@ services:
     command: sh -c "yarn typeorm migration:run -d src/data-source.ts && yarn swagger-autogen"
     volumes:
       - ./api:/home/node/app
-      - ./api/node_modules:/home/node/app/node_modules
+      - node_modules:/home/node/app/node_modules
     networks:
       - app-network
     stdin_open: true

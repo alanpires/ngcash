@@ -11,6 +11,7 @@ async function loginUser(credentials) {
         body: JSON.stringify(credentials)
     })
     .then(data => data.json())
+    .catch((err) => console.error(err))
 }
 
 export default function Login({setToken}) {

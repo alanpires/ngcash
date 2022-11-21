@@ -108,6 +108,14 @@ const doc = {
           }
         }
       ]
+      },
+      TransactionListed: {
+            id: "220a1be2-3203-484f-bdc6-d13448dd7114",
+            value: 10,
+            createdAt: "2022-11-18T18:13:22.685Z",
+            creditedAccount: {
+              id: "b1cc2f78-68e9-48c3-81b1-6fe08a902d48"
+            }
       }
     }
   };

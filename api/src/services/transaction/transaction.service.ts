@@ -62,15 +62,14 @@ export const filterTransactionService = async (accountId: string, start_date: st
 
     const {startDateConverted, endDateConverted} = convertedDateService(start_date, end_date);
 
+    const transactionsCashOut = await TransactionRepository.findCashOutByDate(account, startDateConverted, endDateConverted);
+    const transactionsCashIn = await TransactionRepository.findCashInByDate(account, startDateConverted, endDateConverted);
+
     const allTransactions: any = {
         cashIn,
         cashOut
     }
 
-    const transactionsCashOut = await TransactionRepository.findCashOutByDate(account, startDateConverted, endDateConverted);
-
-    const transactionsCashIn = await TransactionRepository.findCashInByDate(account, startDateConverted, endDateConverted);
-    
     allTransactions.cashOut = transactionsCashOut;
     allTransactions.cashIn = transactionsCashIn;
 
@@ -81,4 +80,31 @@ export const filterTransactionService = async (accountId: string, start_date: st
     } else {
         return allTransactions
     }
+}
+
+export const getAllTransactions = async (accountId: string) => {
+    
+    const account = await AccountRepository.findByIdWhithoutRelations(accountId) as Account;
+
+    const allTransactions = [];
+
+    const transactionsCashOut = await TransactionRepository.findCashOut(account);
+    const transactionsCashIn = await TransactionRepository.findCashIn(account);
+
+    for (let i = 0; i < transactionsCashOut.length; i++) {
+        allTransactions.push(transactionsCashOut[i])
+    }
+
+    for (let i = 0; i < transactionsCashIn.length; i++) {
+        allTransactions.push(transactionsCashIn[i])
+    }
+
+    console.log("allTransactions",allTransactions)
+
+    // allTransactions.sort((a, b) => {
+    //     return a.createdAt < b.createdAt ? -1 : a.createdAt > b.createdAt ? 1 : 0;
+    // })
+
+
+    return allTransactions
 }

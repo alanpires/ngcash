@@ -9,6 +9,7 @@ const router = Router();
 export default (app: Express) => {
     router.post("/transactions", isAuthenticatedMiddleware, ValidationDataMiddleware(createTransactionSchema),  TransactionController.create);
     router.post("/transactions/filter", isAuthenticatedMiddleware, ValidationDataMiddleware(filterTransactionSchema),  TransactionController.filterTransactions)
+    router.get("/transactions", isAuthenticatedMiddleware, TransactionController.listTransactions)
 
     app.use("/api/", router)
 }

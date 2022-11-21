@@ -28,6 +28,9 @@ export const TransactionRepository = AppDataSource.getRepository(Transaction).ex
             },
             relations: {
                 creditedAccount: true
+            },
+            order: {
+                createdAt: "ASC"
             }
         })
     },
@@ -40,7 +43,32 @@ export const TransactionRepository = AppDataSource.getRepository(Transaction).ex
             },
             relations: {
                 debitedAccount: true
+            },
+            order: {
+                createdAt: "ASC"
             }
         })
-    }
+    },
+
+    findCashOut(account: AccountInterface) {
+        return this.find({
+            where: {
+                debitedAccount: account,
+            },
+            relations: {
+                creditedAccount: true
+            }
+        })
+    },
+
+    findCashIn(account: AccountInterface) {
+        return this.find({
+            where: {
+                creditedAccount: account,
+            },
+            relations: {
+                debitedAccount: true
+            }
+        })
+    },
 })
