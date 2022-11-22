@@ -1,9 +1,8 @@
 import React, {useState} from 'react';
-import PropTypes from 'prop-types';
-import FormLogin from '../FormLogin/FormLogin'
+import FormRegister from '../FormRegister/FormRegister';
 
-async function loginUser(credentials) {
-    return fetch('http://localhost:9000/api/login', {
+async function registerUser(credentials) {
+    return fetch('http://localhost:9000/api/create', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -14,25 +13,21 @@ async function loginUser(credentials) {
     .catch((err) => console.error(err))
 }
 
-export default function Login({setToken}) {
+export default function Preferences() {
     const [username, setUsername] = useState();
     const [password, setPassword] = useState();
 
     const handleSubmit = async (e) => {
+        console.log('criou')
         e.preventDefault();
-        const token = await loginUser({
+        await registerUser({
             username,
             password
         });
-        setToken(token)
-        console.log("clicou")
+        
     }
 
     return(
-        <FormLogin handleSubmit={handleSubmit} setUsername={setUsername} setPassword={setPassword}/>
+        <FormRegister handleSubmit={handleSubmit} setUsername={setUsername} setPassword={setPassword}/>
     )
-}
-
-Login.prototype = {
-    setToken: PropTypes.func.isRequired
 }
