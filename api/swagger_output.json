@@ -168,6 +168,51 @@
             }
           }
         }
+      },
+      "get": {
+        "tags": [
+          "Transactions"
+        ],
+        "summary": "list transactions",
+        "description": "On this endpoint it will be possible to list transactions.",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "token",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransactionListed"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransactionListed"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       }
     },
     "/transactions/filter": {
@@ -596,6 +641,35 @@
         },
         "xml": {
           "name": "TransactionFiltered"
+        }
+      },
+      "TransactionListed": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "220a1be2-3203-484f-bdc6-d13448dd7114"
+          },
+          "value": {
+            "type": "number",
+            "example": 10
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2022-11-18T18:13:22.685Z"
+          },
+          "creditedAccount": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "example": "b1cc2f78-68e9-48c3-81b1-6fe08a902d48"
+              }
+            }
+          }
+        },
+        "xml": {
+          "name": "TransactionListed"
         }
       }
     },

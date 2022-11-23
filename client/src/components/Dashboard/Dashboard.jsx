@@ -102,9 +102,6 @@ export default function Dashboard({ userToken }) {
   const startDateLabel = 'Start Date';
   const endDateLabel = 'End Date';
 
-  console.log(startDate);
-  console.log(endDate);
-
   return (
     <div>
       <TableContainer component={Paper}>

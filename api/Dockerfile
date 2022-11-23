@@ -8,9 +8,11 @@ WORKDIR /home/node/app
 # where available (npm@5+)
 COPY package*.json ./
 
-RUN npm install
+EXPOSE 9000
+
+RUN npm install --legacy-peer-deps
 # If you are building your code for production
 # RUN npm ci --only=production
 
 # Bundle app source
-COPY . .
+COPY ./ ./
