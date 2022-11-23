@@ -39,8 +39,7 @@ async function loginUser(credentials) {
     },
     body: JSON.stringify(credentials),
   })
-    .then((data) => data.json())
-    .catch((err) => console.error(err));
+    .then((data) => data.json());
 }
 
 export default function Login({ setToken, handleClick }) {
@@ -56,6 +55,8 @@ export default function Login({ setToken, handleClick }) {
     });
     setToken(res);
     setData(res);
+    setUsername('');
+    setPassword('');
   };
 
   const classes = useStyles();
@@ -76,18 +77,22 @@ export default function Login({ setToken, handleClick }) {
             onSubmit={handleSubmit}
           >
             <TextField
+              required
               type="text"
               label="Username"
               onChange={(e) => setUsername(e.target.value)}
-              name="login-username"
-              id="login-username"
+              name="loginUsername"
+              id="username"
+              value={username}
             />
             <TextField
+              required
               type="password"
               label="Password"
               onChange={(e) => setPassword(e.target.value)}
-              name="login-password"
-              id="login-password"
+              name="loginPassword"
+              id="password"
+              value={password}
             />
             <Button
               type="submit"

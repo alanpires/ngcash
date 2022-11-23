@@ -21,7 +21,7 @@ export default function FeedbackCreateUser({ data, message }) {
     return (
       <div className={classes.divError}>
         {data.error.map((element) => (
-          <div>{element}</div>
+          <div key={element}>{element}</div>
         ))}
       </div>
     );

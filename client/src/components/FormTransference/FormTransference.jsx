@@ -40,7 +40,7 @@ async function newTransference(data, token) {
 function Form({ userToken }) {
   const classes = useStyles();
   const [usernameCashIn, setUsernameCashIn] = React.useState('');
-  const [value, setValue] = React.useState(0);
+  const [value, setValue] = React.useState('');
   const [data, setData] = React.useState({});
 
   const handleSubmit = async (e) => {
@@ -50,6 +50,8 @@ function Form({ userToken }) {
       value,
     }, userToken);
     setData(res);
+    setUsernameCashIn('');
+    setValue('');
   };
 
   const message = 'Transferência realizada com sucesso.';
@@ -65,6 +67,7 @@ function Form({ userToken }) {
           id="username"
           name="username"
           onChange={(e) => setUsernameCashIn(e.target.value)}
+          value={usernameCashIn}
         />
         <TextField
           label="Value"
@@ -74,6 +77,7 @@ function Form({ userToken }) {
           name="value"
           required
           onChange={(e) => setValue(Number(e.target.value))}
+          value={value}
         />
         <div>
           <Button type="submit" variant="contained" color="primary">

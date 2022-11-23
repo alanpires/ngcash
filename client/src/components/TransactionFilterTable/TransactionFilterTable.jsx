@@ -4,14 +4,16 @@ import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
+import FeedbackUser from '../Feedback/FeedbackUser';
 
-export default function TransactionTable({
-  getTransactions, ccyFormat, invoiceTotal,
+export default function TransactionFilterTable({
+  ccyFormat, invoiceTotal, data, transactionsFilter,
 }) {
+  let transactions = transactionsFilter;
+
   const createRow = (ID, createdAt, destinationAccount, type, value) => ({
     ID, createdAt, destinationAccount, type, value,
   });
-
   const rows = (transactionsArray) => {
     const rowsList = [];
 
@@ -41,10 +43,17 @@ export default function TransactionTable({
     return rowsList;
   };
 
-  const rowsList = rows(getTransactions);
+  if (Object.prototype.hasOwnProperty.call(transactionsFilter, 'cashIn')) {
+    transactions = transactionsFilter.cashIn;
+  } else if (Object.prototype.hasOwnProperty.call(transactionsFilter, 'cashOut')) {
+    transactions = transactionsFilter.cashOut;
+  }
+
+  const rowsList = rows(transactions);
 
   return (
     <div>
+      <FeedbackUser data={data} />
       <Table sx={{ minWidth: 700 }} aria-label="spanning table">
         <TableHead>
           <TableRow>

@@ -18,7 +18,8 @@ const useStyles = makeStyles((theme) => ({
 
     '& .MuiTextField-root': {
       margin: theme.spacing(1),
-      width: '300px',
+      // width: '300px',
+      minWidth: '300px',
     },
     '& .MuiButtonBase-root': {
       margin: theme.spacing(2),
@@ -44,8 +45,7 @@ async function registerUser(credentials) {
     },
     body: JSON.stringify(credentials),
   })
-    .then((data) => data.json())
-    .catch((err) => console.error(err));
+    .then((data) => data.json());
 }
 
 export default function Register({ handleClick }) {
@@ -54,12 +54,15 @@ export default function Register({ handleClick }) {
   const [passwordRepeat, setPasswordrepeat] = useState('');
   const [data, setData] = useState({});
 
-  const message = 'Usuário criado com sucesso.';
+  const message = 'Usuário criado com sucesso. Faça o login.';
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const res = await registerUser({ username, password });
     setData(res);
+    setUsername('');
+    setPassword('');
+    setPasswordrepeat('');
   };
 
   const classes = useStyles();
@@ -87,6 +90,7 @@ export default function Register({ handleClick }) {
               onChange={(e) => setUsername(e.target.value)}
               name="registeUsername"
               id="username"
+              value={username}
             />
             <TextField
               required
@@ -95,6 +99,7 @@ export default function Register({ handleClick }) {
               onChange={(e) => setPassword(e.target.value)}
               name="registerPassword"
               id="password"
+              value={password}
             />
             <TextField
               required
@@ -103,6 +108,7 @@ export default function Register({ handleClick }) {
               onChange={(e) => setPasswordrepeat(e.target.value)}
               name="register-password-repeat"
               id="register-password-repeat"
+              value={passwordRepeat}
             />
             <Button
               type="submit"
