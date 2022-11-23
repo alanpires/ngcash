@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import { makeStyles } from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
+import axios from "axios";
+import FormNewTransference from '../Feedback/FeedbackNewTransference'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -19,6 +21,9 @@ const useStyles = makeStyles(theme => ({
       margin: theme.spacing(2),
     },
   },
+  saldo: {
+    textAlign: 'center'
+  },
 }));
 
 async function newTransference(data, token) {
@@ -34,19 +39,21 @@ async function newTransference(data, token) {
     .catch((err) => console.log(err))
 }
 
-const Form = ({ handleClose, userToken }) => {
+const Form = ({ userToken }) => {
   const classes = useStyles();
-  const [usernameCashIn, setUsernameCashIn] = React.useState();
-  const [value, setValue] = React.useState();
+  const [usernameCashIn, setUsernameCashIn] = React.useState("");
+  const [value, setValue] = React.useState(0);
+  const [data, setData] = React.useState({});
 
   const handleSubmit = async (e) => {
-    console.log('criou nova transação')
     e.preventDefault();
-    await newTransference({
+    const data = await newTransference({
         usernameCashIn,
         value
     }, userToken);
-    handleClose();
+    setData(data)
+    setUsernameCashIn("")
+    setValue(0)
 }
 
   return (
@@ -55,24 +62,27 @@ const Form = ({ handleClose, userToken }) => {
       <TextField
         label="Username"
         variant="filled"
+        type="text"
         required
+        id="username"
+        name="username"
         onChange={e => setUsernameCashIn(e.target.value)}
       />
       <TextField
         label="Value"
         variant="filled"
         type="number"
+        id="value"
+        name="value"
         required
         onChange={e => setValue(Number(e.target.value))}
       />
       <div>
-        <Button variant="contained" onClick={handleClose}>
-          Cancel
-        </Button>
         <Button type="submit" variant="contained" color="primary">
           Enviar
         </Button>
       </div>
+      <FormNewTransference data={data}/>
     </form>
     </div>
   );

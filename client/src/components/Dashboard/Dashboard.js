@@ -11,10 +11,10 @@ const config = (token) => {
   };
 }
 
-const reqAccounts = async (token, setTransactions) => {
+const reqAccounts = async (token, setAccount) => {
   return axios.get("http://localhost:9000/api/accounts", config(token))
   .then((res) => {
-    setTransactions(res.data)
+    setAccount(res.data)
 });
 }
 

@@ -6,6 +6,8 @@ import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
+import ModalDialog from "../ModalDialog/ModalDialog";
+// import { Link } from 'react-router-dom';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -20,6 +22,18 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function Appbar({ handleClick, token, setToken }) {
+  const [open, setOpen] = React.useState(false);
+
+  // function to handle modal open
+  const handleOpen = () => {
+    setOpen(true);
+  };
+
+  // function to handle modal close
+  const handleClose = () => {
+    setOpen(false);
+  };
+
   const classes = useStyles();
 
   if (token) {
@@ -32,14 +46,28 @@ export default function Appbar({ handleClick, token, setToken }) {
             </Typography>
             <Button 
               color="inherit" 
+              value="Dashboard" 
+              href="/dashboard"
+              onClick={handleOpen}>
+              Dashboard
+            </Button>
+            <Button 
+              color="inherit" 
+              value="New Transference" 
+              href="/transference"
+              onClick={handleOpen}>
+              Nova Transferência
+            </Button>
+            <Button 
+              color="inherit" 
               value="Logout" 
               onClick={() => {
                 localStorage.clear();
                 setToken("")
               }}>
               Logout
-      </Button>
-            {/* <Logout token={token} setToken={setToken} /> */}
+            </Button>
+      
           </Toolbar>
         </AppBar>
       </div>

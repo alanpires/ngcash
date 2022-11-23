@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -6,17 +6,59 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import TransferenceCreate from '../TransferenceCreate/TransferenceCreate'
-import dayjs from 'dayjs';
-// import Stack from '@mui/material/Stack';
-// import TextField from '@mui/material/TextField';
+import { makeStyles } from "@material-ui/core/styles";
+import FilterDate from '../FilterDate/FilterDate'
+import Select from '../Select/Select'
+import Button from "@material-ui/core/Button";
+import axios from "axios";
+
+const useStyles = makeStyles(theme => ({
+  saldo: {
+    marginLeft: '1%',
+  },
+  filter: {
+    display: 'flex',
+    justifyContent: 'space-evenly',
+    width: '37em'
+  }
+}));
+
+
+
+const config = (token) => {
+  return {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    }
+  };
+}
+
+const filterTransactions = async (token, data, setFilterTransactions) => {
+  return axios.post("http://localhost:9000/api/transactions/filter", data, config(token))
+  .then((res) => {
+    setFilterTransactions(res.data)
+});
+}
+
+const allTransactions = async (token, data, setAllTransactions) => {
+  return axios.get("http://localhost:9000/api/transactions", data, config(token))
+  .then((res) => {
+    setAllTransactions(res.data)
+});
+}
 
 export default function TransactionTable({getTransactions, getAccount, userToken}) {
-  const [value, setValue] = React.useState(dayjs('2014-08-18T21:11:54'));
+  const [filterDate, setFilterDate] = useState("")
+  const [select, setSelect] = useState("")
+  const [filterTransactions, setFilterTransactions] = useState({})
+  const [allTransactions, setAllTransactions] = useState({})
 
-  const handleChange = (newValue) => {
-    setValue(newValue);
-  };
+  useEffect(() => {
+    filterTransactions(userToken, {filterDate, select, setFilterTransactions})
+    allTransactions(userToken, filterDate, setAllTransactions)
+  }, [filterTransactions, userToken, filterDate, select, allTransactions])
+
+  const classes = useStyles();
 
   const ccyFormat = (num) => {
     return `${num.toFixed(2)}`;
@@ -49,35 +91,31 @@ export default function TransactionTable({getTransactions, getAccount, userToken
 
   const rowsList = rows(getTransactions);
 
-  console.log(rowsList)
-
   let invoiceTotal = 0;
 
   if (getAccount.balance) {
     invoiceTotal = getAccount.balance
   }
 
+
   return (
     <div>
-      
-<TableContainer component={Paper}>
-      {/* <h2>Saldo: R$ {ccyFormat(invoiceTotal)}</h2> */}
-      <TransferenceCreate userToken={userToken}/>
-      {/* <div>
-      <Stack component="form" noValidate spacing={3}>
-      <TextField
-        id="date"
-        label="Filter"
-        type="date"
-        sx={{ width: 220 }}
-        InputLabelProps={{
-          shrink: true,
-        }}
-      />
-    </Stack>
-      </div> */}
-        
-      
+    <TableContainer component={Paper}>
+    <h3 className={classes.saldo}>Saldo: R$ {ccyFormat(invoiceTotal)}</h3>
+    <div className={classes.filter}>
+      <FilterDate setFilterDate={setFilterDate}/>
+      <Select setSelect={setSelect}/>
+      <Button
+        variant="contained"
+        color="primary"
+        value="Register"
+        type="submit"
+        onClick={() => console.log('clicked')}
+        >
+        Filtrar
+      </Button>
+    </div>
+    
     <Table sx={{ minWidth: 700 }} aria-label="spanning table">
     <TableHead>
       <TableRow>

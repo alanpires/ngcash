@@ -4,11 +4,12 @@ import TextField from "@material-ui/core/TextField";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import Button from "@material-ui/core/Button";
+import FeedbackUser from '../Feedback/FeedbackCreateUser'
 
 const useStyles = makeStyles(theme => ({
     root: {
       display: 'flex',
-      flexDirection: 'column',
+      flexDirection: 'row',
       alignItems: 'center',
     },
     form : {
@@ -26,6 +27,12 @@ const useStyles = makeStyles(theme => ({
     card: {
       padding: theme.spacing(2),
       background: '#f5f5f5',
+    },
+    div: {
+      padding: theme.spacing(3),
+    },
+    divChild: {
+      fontWeight: 'bold'
     }
   }));
 
@@ -37,22 +44,27 @@ async function registerUser(credentials) {
         },
         body: JSON.stringify(credentials)
     })
-    .then(data => data.json())
+    .then(data => {
+      // setData(data.json())
+      return data.json()
+    })
     .catch((err) => console.error(err))
 }
 
 export default function Register({handleClick}) {
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
-    const [passwordRepeat, setPasswordrepeat] = useState("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [passwordRepeat, setPasswordrepeat] = useState("");
+  const [data, setData] = useState({});
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await registerUser({
-        username,
-        password
-    }); 
-}
+    const data = await registerUser({username, password});
+    setData(data)
+    setUsername("")
+    setPassword("")
+    setPasswordrepeat("")
+  }
 
   const classes = useStyles();
 
@@ -62,6 +74,7 @@ export default function Register({handleClick}) {
       className={classes.card}
       variant="outlined"
      >
+    
       <CardContent
       className={classes.card} >
         <form
@@ -71,20 +84,23 @@ export default function Register({handleClick}) {
           onSubmit={handleSubmit}
         >
             <TextField
+            required
             type="text"
             label="Username"
             onChange={(e) => setUsername(e.target.value)}
-            name="register-username"
-            id="register-username"
+            name="registeUsername"
+            id="username"
           />
           <TextField
+            required
             type="password"
             label="Password"
             onChange={(e) => setPassword(e.target.value)}
-            name="register-password"
-            id="register-password"
+            name="registerPassword"
+            id="password"
           />
           <TextField
+            required
             label="Repeat-password"
             type="password"
             onChange={(e) => setPasswordrepeat(e.target.value)}
@@ -112,9 +128,28 @@ export default function Register({handleClick}) {
               }}>
             Log in
           </Button>
+          <FeedbackUser data={data}/>
         </form>
         </CardContent>
     </Card>
+    <div className={classes.div}>
+       <div className={classes.divChild}>
+         Username:
+       </div>
+       <div>- mínimo 3 caracteres</div>
+       <div className={classes.divChild}>
+       Password: 
+       </div>
+       <div>
+        - mínimo 8 caracteres
+       </div>
+       <div>
+        - deve conter ao menos 1 letra maíscula
+       </div>
+       <div>
+        - deve conter ao menos 1 número
+       </div>
+       </div>
     </div>
   );
 }

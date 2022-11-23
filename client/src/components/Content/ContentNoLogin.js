@@ -11,7 +11,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function Content({ setToken, click, handleClick }) {
+export default function ContentNoLogin({ setToken, click, handleClick }) {
   const classes = useStyles();
 
   return (
@@ -27,7 +27,6 @@ export default function Content({ setToken, click, handleClick }) {
         ) : (
           <Register handleClick={handleClick}/>
         )}
-
         <Grid />
         <Grid />
       </Grid>
