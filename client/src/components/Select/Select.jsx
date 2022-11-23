@@ -5,8 +5,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 
-export default function BasicSelect({setSelect, select}) {
-
+export default function BasicSelect({ setSelect, select }) {
   return (
     <Box sx={{ minWidth: 120 }}>
       <FormControl fullWidth>
@@ -20,11 +19,10 @@ export default function BasicSelect({setSelect, select}) {
           onChange={(e) => setSelect(e.target.value)}
           sx={{ width: 220 }}
         >
-          <MenuItem value={'empty'}></MenuItem>
-          <MenuItem value={'cashIn'}>CashIn</MenuItem>
-          <MenuItem value={'cashOut'}>CashOut</MenuItem>
-          <MenuItem value={'both'}>Both</MenuItem>
-          
+          <MenuItem value="empty" />
+          <MenuItem value="cashIn">CashIn</MenuItem>
+          <MenuItem value="cashOut">CashOut</MenuItem>
+          <MenuItem value="both">Both</MenuItem>
         </Select>
       </FormControl>
     </Box>

@@ -1,43 +1,41 @@
 import * as React from 'react';
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from '@material-ui/core/styles';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles(() => ({
   divSuccess: {
     textAlign: 'center',
     fontWeight: 'bold',
-    color: '#00a000'
+    color: '#00a000',
   },
   divError: {
     textAlign: 'center',
     fontWeight: 'bold',
-    color: 'red'
-  }
+    color: 'red',
+  },
 }));
 
-export default function FeedbackNewTransference({data}) {
-
+export default function FeedbackCreateUser({ data, message }) {
   const classes = useStyles();
 
-  if (data.hasOwnProperty('error')) {
+  if (Object.prototype.hasOwnProperty.call(data, 'error')) {
     return (
       <div className={classes.divError}>
         {data.error.map((element) => (
           <div>{element}</div>
         ))}
       </div>
-    )
-  } else if (data.hasOwnProperty('id')) {
+    );
+  } if (Object.prototype.hasOwnProperty.call(data, 'id')) {
     return (
       <div className={classes.divSuccess}>
-        <div>Transferência realizada com sucesso.</div>
+        <div>{message || ''}</div>
       </div>
-    )
-  } else if (data.hasOwnProperty('status')) {
+    );
+  } if (Object.prototype.hasOwnProperty.call(data, 'status')) {
     return (
       <div className={classes.divError}>
         {data.message}
       </div>
-    )
+    );
   }
-
 }
