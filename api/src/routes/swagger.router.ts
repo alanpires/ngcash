@@ -8,5 +8,5 @@ export default (app: Express) => {
     router.use('/docs', swaggerUi.serve);
     router.get('/docs', swaggerUi.setup(swaggerDocument));
     
-    app.use("/api/", router)
+    app.use("/", router)
 }

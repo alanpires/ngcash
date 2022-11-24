@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 async function newTransference(data, token) {
-  return fetch('http://localhost:9000/api/transactions', {
+  return fetch('/api/transactions', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

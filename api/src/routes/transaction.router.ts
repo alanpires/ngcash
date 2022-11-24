@@ -11,5 +11,5 @@ export default (app: Express) => {
     router.post("/transactions/filter", isAuthenticatedMiddleware, ValidationDataMiddleware(filterTransactionSchema),  TransactionController.filterTransactions)
     router.get("/transactions", isAuthenticatedMiddleware, TransactionController.listTransactions)
 
-    app.use("/api/", router)
+    app.use("/", router)
 }

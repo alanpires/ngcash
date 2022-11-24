@@ -7,5 +7,5 @@ const router = Router();
 export default (app: Express) => {
     router.get("/accounts", isAuthenticatedMiddleware, AccountController.list);
 
-    app.use("/api/", router)
+    app.use("/", router)
 }

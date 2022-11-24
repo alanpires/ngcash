@@ -10,13 +10,8 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.get("/integration", (req, res) => {
-    res.send("A API está funcionando corretamente")
-})
-
 AppRouters(app);
 
 app.use(handleAppErrorMiddleware);
-
 
 export default app;

@@ -1,18 +1,18 @@
-FROM node:16
+FROM node:16-alpine as base
 
-# Create app directory
 WORKDIR /home/node/app
-
-# Install app dependencies
-# A wildcard is used to ensure both package.json AND package-lock.json are copied
-# where available (npm@5+)
 COPY package*.json ./
+ARG API_PORT
+ENV PORT=${API_PORT}
+EXPOSE ${API_PORT}
 
-EXPOSE 9000
+FROM base as production
+ENV NODE_ENV=production
+RUN npm ci
+COPY ./ ./
+CMD ["node", "src/server.ts"]
 
+FROM base as dev
+ENV NODE_ENV=development
 RUN npm install --legacy-peer-deps
-# If you are building your code for production
-# RUN npm ci --only=production
-
-# Bundle app source
 COPY ./ ./

@@ -8,5 +8,5 @@ const router = Router();
 export default (app: Express) => {
     router.post("/create", UserValidationMiddleware(userSchema), UserController.createUser)
 
-    app.use("/api/", router)
+    app.use("/", router)
 }

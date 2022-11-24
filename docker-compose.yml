@@ -1,18 +1,21 @@
 version: '3.1'
 
+x-common-variables: &common-variables
+  POSTGRES_DB: $POSTGRES_DB
+  POSTGRES_USER: $POSTGRES_USER
+  POSTGRES_PASSWORD: $POSTGRES_PASSWORD
+
 services:
   db:
     image: postgres
     container_name: db
-    restart: unless-stopped 
+    restart: always
     ports:
       - 5433:5432
     env_file:
       - .env
     environment:
-      - POSTGRES_DB=$POSTGRES_DB
-      - POSTGRES_USER=$POSTGRES_USER
-      - POSTGRES_PASSWORD=$POSTGRES_PASSWORD
+      <<: *common-variables
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U $POSTGRES_USER --dbname=$POSTGRES_DB"]
       interval: 10s
@@ -25,7 +28,7 @@ services:
     depends_on:
       - client
       - api
-    restart: always
+    restart: always 
     build:
       context: ./nginx
       dockerfile: Dockerfile
@@ -36,25 +39,24 @@ services:
     build:
       context: ./api
       dockerfile: Dockerfile
+      target: dev
     restart: unless-stopped
-    container_name: api
-    env_file:
-      - .env
-    volumes:
-      - ./api:/home/node/app
-      - node_modules_api:/home/node/app/node_modules
-    command: sh -c "yarn typeorm migration:run -d src/data-source.ts && yarn swagger-autogen"
-    ports:
-      - 9000:9000
-    environment:
-      - POSTGRES_USER=$POSTGRES_USER
-      - POSTGRES_PASSWORD=$POSTGRES_PASSWORD
-      - POSTGRES_HOST=db
-      - POSTGRES_PORT=$POSTGRES_PORT
-      - POSTGRES_DB=$POSTGRES_DB
     depends_on:
       db:
         condition: service_healthy
+    volumes:
+      - ./api:/home/node/app
+      - /home/node/app/node_modules
+    command: sh -c "yarn typeorm migration:run -d src/data-source.ts && yarn swagger-autogen"
+    env_file:
+      - .env
+    ports:
+      - $API_PORT:$API_PORT
+    environment:
+      <<: *common-variables
+      PORT: $API_PORT
+      POSTGRES_HOST: db
+      POSTGRES_PORT: $POSTGRES_PORT
     stdin_open: true
     tty: true
   
@@ -71,16 +73,14 @@ services:
     env_file:
       - .env
     ports:
-      - 3000:3000
+      - $CLIENT_PORT:$CLIENT_PORT
     stdin_open: true
     tty: true
     depends_on:
       - api
     volumes:
       - ./client/:/srv/app
-      - node_modules_client:/srv/app/node_modules
+      - /srv/app/node_modules
 
 volumes:
   pgdata:
-  node_modules_api:
-  node_modules_client:

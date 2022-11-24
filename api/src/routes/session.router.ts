@@ -8,5 +8,5 @@ const router = Router();
 export default (app: Express) => {
     router.post("/login", ValidationDataMiddleware(loginSchema), SessionController.login)
 
-    app.use("/api/", router)
+    app.use("/", router)
 }

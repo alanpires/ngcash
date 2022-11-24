@@ -37,7 +37,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 async function registerUser(credentials) {
-  return fetch('http://localhost:9000/api/create', {
+  return fetch('/api/create', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

@@ -16,19 +16,19 @@ const config = (token) => ({
 });
 
 const reqAccounts = async (token, setAccount) => axios
-  .get('http://localhost:9000/api/accounts', config(token))
+  .get('/api/accounts', config(token))
   .then((res) => {
     setAccount(res.data);
   });
 
 const reqTransactions = async (token, setTransactions) => axios
-  .get('http://localhost:9000/api/transactions', config(token))
+  .get('/api/transactions', config(token))
   .then((res) => {
     setTransactions(res.data);
   });
 
 async function reqTransactionsFilter(token, data) {
-  return fetch('http://localhost:9000/api/transactions/filter', {
+  return fetch('/api/transactions/filter', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
