@@ -1,70 +1,47 @@
-# Getting Started with Create React App
+# Ng Cash
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Esse é um projeto fullstack, cujo objetivo é possibilitar que usuários consigam realizar transferências entre si.
 
-## Available Scripts
+## Instalação do Docker
 
-In the project directory, you can run:
+Para rodar essa aplicação é necessário ter o Docker e o Docker Compose instalados.
 
-### `npm start`
+## Como rodar a aplicação?
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+1. Crie um arquivo .env na raiz da aplicação seguindo o exemplo contido no arquivo .env.example.
+2. Execute o seguinte comando:
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+```
+docker-compose up
+```
 
-### `npm test`
+## Acessando a aplicação
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Após os conteineres terem subido, você poderá acessar a aplicação pelos seguintes endpoints:
 
-### `npm run build`
+- `http://localhost:8008` - Aplicação React
+- `http://localhost:9000` - API
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Endpoints:
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Os detalhes da documentação da API estará disponível no endpoint `http://localhost:9000/docs`.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## URLs:
 
-### `npm run eject`
+| Método | Endpoint             | Responsabilidade                                         |
+| ------ | -------------------- | -------------------------------------------------------- |
+| POST   | /accounts            | Criação de usuários (Não precisa de autenticação)        |
+| POST   | login                | Faz a autenticação do usuário                            |
+| GET    | /accounts            | Lista a conta do usuário (Somente usuários autenticados) |
+| POST   | /transactions        | Cria uma nova transação (Somente usuários autenticados)  |
+| POST   | /transactions/filter | Filtragem de transações (Somente usuários autenticados)  |
+| GET    | /transactions        | Lista as transações (somente usuários autenticados)      |
+| GET    | /docs                | Documentação da API                                      |
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## Desligando
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Para remover o aplicativo, você pode usar executar este comando:
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+```
+docker-compose down
+```
