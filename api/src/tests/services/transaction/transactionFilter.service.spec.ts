@@ -59,7 +59,10 @@ describe('Filter a transaction', () => {
       end_date,
     );
 
-    expect(filteredTransactions).toHaveLength(5);
+    expect(filteredTransactions).toHaveProperty('cashIn');
+    expect(filteredTransactions).toHaveProperty('cashOut');
+    expect(filteredTransactions.cashIn).toHaveLength(5);
+    expect(filteredTransactions.cashOut).toHaveLength(0);
   });
 
   test('Checks if the transaction is filtered by date and by cashIn', async () => {
@@ -185,13 +188,16 @@ describe('Filter a transaction', () => {
     // Filter transactions by date with cashOut parameter and without cashIn parameter
     // CashOut from userCashOut
     const filteredTransactions: any = await filterTransactionService(
-      userCashIn.account.id,
+      userCashOut.account.id,
       start_date,
       end_date,
       true,
       true,
     );
 
-    expect(filteredTransactions).toHaveLength(5);
+    expect(filteredTransactions).toHaveProperty('cashIn');
+    expect(filteredTransactions).toHaveProperty('cashOut');
+    expect(filteredTransactions.cashIn).toHaveLength(0);
+    expect(filteredTransactions.cashOut).toHaveLength(5);
   });
 });

@@ -253,13 +253,13 @@ describe('Testing the transaction routes', () => {
     await request(app).post('/create').send(userCashOutData);
 
     // Login userCashOut
-    const token = await (
+    const tokenCashOut = await (
       await request(app).post('/login').send(userCashOutData)
     ).body.token;
 
     // Create 5 transactions
     for (let i = 1; i <= 5; i++) {
-      const usernameCashIn = 'miguel';
+      const usernameCashIn = userCashInData.username;
       const value = 15 + i;
 
       const transactionData = { usernameCashIn, value };
@@ -267,7 +267,7 @@ describe('Testing the transaction routes', () => {
       await request(app)
         .post('/transactions')
         .send(transactionData)
-        .set('Authorization', `Bearer ${token}`);
+        .set('Authorization', `Bearer ${tokenCashOut}`);
     }
 
     //Filtered transaction
@@ -279,12 +279,13 @@ describe('Testing the transaction routes', () => {
     const response = await request(app)
       .post('/transactions/filter/')
       .send(transactionFilterData)
-      .set('Authorization', `Bearer ${token}`);
+      .set('Authorization', `Bearer ${tokenCashOut}`);
 
-    // const {cashIn, cashOut} = response.body;
+    const { cashIn, cashOut } = response.body;
 
     expect(response.status).toBe(200);
-    expect(response.body).toHaveLength(5);
+    expect(cashIn).toHaveLength(0);
+    expect(cashOut).toHaveLength(5);
   });
 
   test('Checks if the transaction is filtered by date and by cashIn', async () => {
