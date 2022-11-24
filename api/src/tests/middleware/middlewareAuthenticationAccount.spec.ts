@@ -1,87 +1,94 @@
-import { DataSource } from "typeorm";
-import { AppDataSource } from "../../data-source";
-import app from "../../app";
-import request from "supertest";
+import { DataSource } from 'typeorm';
+import { AppDataSource } from '../../data-source';
+import app from '../../app';
+import request from 'supertest';
 
 //Teste de integração
-describe("Testing the middleware authentication with the account routes", () => {
-    let connection: DataSource;
+describe('Testing the middleware authentication with the account routes', () => {
+  let connection: DataSource;
 
-    beforeAll(async () => {
-        await AppDataSource.initialize()
-        .then((res) => connection = res)
-        .catch((err) => {console.error("Error during Data Source initialization", err)});
+  beforeAll(async () => {
+    await AppDataSource.initialize()
+      .then(res => (connection = res))
+      .catch(err => {
+        console.error('Error during Data Source initialization', err);
+      });
+  });
+
+  afterAll(async () => {
+    await connection.destroy();
+  });
+
+  test('Must fail if user does not enter a valid token', async () => {
+    // Create an user
+    const username = 'jose';
+    const password = '12345678A';
+
+    const userData = { username, password };
+
+    await request(app).post('/create/').send(userData);
+
+    // Login user
+    await (
+      await request(app).post('/login/').send(userData)
+    ).body.token;
+
+    // List accounts
+    const response = await request(app)
+      .get('/accounts/')
+      .set('Authorization', `Bearer ${'token'}`);
+
+    expect(response.status).toBe(400);
+    expect(response.body).toStrictEqual({
+      detail: 'Invalid token',
     });
+  });
 
-    afterAll(async () => {
-        await connection.destroy();
+  test('Must fail if user does not provide any tokens', async () => {
+    // Create an user
+    const username = 'jose';
+    const password = '12345678A';
+
+    const userData = { username, password };
+
+    await request(app).post('/create/').send(userData);
+
+    // Login user
+    await (
+      await request(app).post('/login/').send(userData)
+    ).body.token;
+
+    // List accounts
+    const response = await request(app)
+      .get('/accounts/')
+      .set('Authorization', `Bearer`);
+
+    expect(response.status).toBe(400);
+    expect(response.body).toStrictEqual({
+      detail: 'Token cannot be blank',
     });
+  });
 
-    test("Must fail if user does not enter a valid token", async () => {
-        // Create an user
-        const username = "jose";
-        const password = "12345678A";
+  test("It should fail if the user doesn't enable the authentication field", async () => {
+    // Create an user
+    const username = 'jose';
+    const password = '12345678A';
 
-        const userData = {username, password};
+    const userData = { username, password };
 
-        await request(app).post("/create/").send(userData);
+    await request(app).post('/create/').send(userData);
 
-        // Login user
-        await (await request(app).post("/login/").send(userData)).body.token;
+    // Login user
+    await (
+      await request(app).post('/login/').send(userData)
+    ).body.token;
 
-        // List accounts
-        const response = await request(app).get("/accounts/").set("Authorization", `Bearer ${"token"}`);
+    // List accounts
+    const response = await request(app).get('/accounts/');
 
-        expect(response.status).toBe(400);
-        expect(response.body).toStrictEqual({
-            detail: "Invalid token"
-        })
+    expect(response.status).toBe(400);
+    expect(response.body).toStrictEqual({
+      detail: 'Authentication credentials were not provided',
     });
-
-    test("Must fail if user does not provide any tokens", async () => {
-        // Create an user
-        const username = "jose";
-        const password = "12345678A";
-
-        const userData = {username, password};
-
-        await request(app).post("/create/").send(userData);
-
-        // Login user
-        await (await request(app).post("/login/").send(userData)).body.token;
-
-        // List accounts
-        const response = await request(app).get("/accounts/").set("Authorization", `Bearer`);
-
-        expect(response.status).toBe(400);
-        expect(response.body).toStrictEqual({
-            detail: "Token cannot be blank"
-        })
-    });
-
-    test("It should fail if the user doesn't enable the authentication field", async () => {
-        // Create an user
-        const username = "jose";
-        const password = "12345678A";
-
-        const userData = {username, password};
-
-        await request(app).post("/create/").send(userData);
-
-        // Login user
-        await (await request(app).post("/login/").send(userData)).body.token;
-
-        // List accounts
-        const response = await request(app).get("/accounts/");
-
-        expect(response.status).toBe(400);
-        expect(response.body).toStrictEqual({
-            detail: "Authentication credentials were not provided"
-        })
-    });
-
-
-
-
-
+  });
 });

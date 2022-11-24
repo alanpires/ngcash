@@ -1,9 +1,9 @@
 import express from 'express';
-import "express-async-errors";
-import "reflect-metadata";
+import 'express-async-errors';
+import 'reflect-metadata';
 import { handleAppErrorMiddleware } from './middlewares/handleAppErrorMiddleware';
-import AppRouters from "./routes"
-import cors from "cors";
+import AppRouters from './routes';
+import cors from 'cors';
 
 const app = express();
 

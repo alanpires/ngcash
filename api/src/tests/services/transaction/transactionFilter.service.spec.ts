@@ -1,171 +1,197 @@
 import { Transaction } from './../../../entities/transaction.entity';
-import { createTransactionService, filterTransactionService } from '../../../services/transaction/transaction.service';
+import {
+  createTransactionService,
+  filterTransactionService,
+} from '../../../services/transaction/transaction.service';
 import { createUserService } from '../../../services/user/user.service';
-import { DataSource } from "typeorm";
-import { AppDataSource } from "../../../data-source";
+import { DataSource } from 'typeorm';
+import { AppDataSource } from '../../../data-source';
 
-describe("Filter a transaction", () => {
-    let connection: DataSource;
+describe('Filter a transaction', () => {
+  let connection: DataSource;
 
-    beforeEach(async () => {
-        await AppDataSource.initialize()
-        .then((res) => connection = res)
-        .catch((err) => {console.error("Error during Data Source initialization", err)})
-    });
+  beforeEach(async () => {
+    await AppDataSource.initialize()
+      .then(res => (connection = res))
+      .catch(err => {
+        console.error('Error during Data Source initialization', err);
+      });
+  });
 
-    afterEach(async () => {
-        await connection.destroy();
-    })
+  afterEach(async () => {
+    await connection.destroy();
+  });
 
-    test("Checks if the transaction is filtered by date without informing cashin or cashout", async () => {
-        // Create an userCashOut
-        const username = "jose"
-        const password = "1234";
-    
-        const userCashOutData = {username, password};
-        const userCashOut = await createUserService(userCashOutData);
+  test('Checks if the transaction is filtered by date without informing cashin or cashout', async () => {
+    // Create an userCashOut
+    const username = 'jose';
+    const password = '1234';
 
-        // Create another userCashIn
-        const username2 = "carla";
-        const password2 = "1234";
-    
-        const userCashInData = {username: username2, password: password2};
-        const userCashIn = await createUserService(userCashInData);
-        
-        // Create 5 transactions from userCashOut to userCashIn
-        for (let i = 1; i <= 5; i++) {
-            const value = 10 + i;
+    const userCashOutData = { username, password };
+    const userCashOut = await createUserService(userCashOutData);
 
-            await createTransactionService(
-                userCashOut.account.id, 
-                userCashOut.username, 
-                userCashIn.username, 
-                value) as Transaction;
-        }
+    // Create another userCashIn
+    const username2 = 'carla';
+    const password2 = '1234';
 
-        const start_date = new Date().toISOString();
-        const end_date = new Date().toISOString();
+    const userCashInData = { username: username2, password: password2 };
+    const userCashIn = await createUserService(userCashInData);
 
-        // Filter transactions by date and whitout cashIn and cashOut parameter
-        const filteredTransactions: any = await filterTransactionService(userCashIn.account.id, start_date, end_date);
+    // Create 5 transactions from userCashOut to userCashIn
+    for (let i = 1; i <= 5; i++) {
+      const value = 10 + i;
 
-        expect(filteredTransactions).toHaveLength(5)
+      (await createTransactionService(
+        userCashOut.account.id,
+        userCashOut.username,
+        userCashIn.username,
+        value,
+      )) as Transaction;
+    }
 
-    });
+    const start_date = new Date().toISOString();
+    const end_date = new Date().toISOString();
 
-    test("Checks if the transaction is filtered by date and by cashIn", async () => {
-        // Create an userCashOut
-        const username = "jose"
-        const password = "1234";
-    
-        const userCashOutData = {username, password};
-        const userCashOut = await createUserService(userCashOutData);
+    // Filter transactions by date and whitout cashIn and cashOut parameter
+    const filteredTransactions: any = await filterTransactionService(
+      userCashIn.account.id,
+      start_date,
+      end_date,
+    );
 
-        // Create another userCashIn
-        const username2 = "carla";
-        const password2 = "1234";
-    
-        const userCashInData = {username: username2, password: password2};
-        const userCashIn = await createUserService(userCashInData);
-        
-        // Create 5 transactions from userCashOut to userCashIn
-        for (let i = 1; i <= 5; i++) {
-            const value = 10 + i;
+    expect(filteredTransactions).toHaveLength(5);
+  });
 
-            await createTransactionService(
-                userCashOut.account.id, 
-                userCashOut.username, 
-                userCashIn.username, 
-                value) as Transaction;
-        }
+  test('Checks if the transaction is filtered by date and by cashIn', async () => {
+    // Create an userCashOut
+    const username = 'jose';
+    const password = '1234';
 
-        const start_date = new Date().toISOString();
-        const end_date = new Date().toISOString();
+    const userCashOutData = { username, password };
+    const userCashOut = await createUserService(userCashOutData);
 
-        // Filter transactions by date with cashIn parameter and without cashOut parameter
-        const filteredTransactions: any = await filterTransactionService(userCashIn.account.id, start_date, end_date, true);
-        const {cashIn} = filteredTransactions;
+    // Create another userCashIn
+    const username2 = 'carla';
+    const password2 = '1234';
 
-        expect(filteredTransactions).toHaveProperty("cashIn");
-        expect(filteredTransactions).not.toHaveProperty("cashOut");
-        expect(cashIn).toHaveLength(5);
+    const userCashInData = { username: username2, password: password2 };
+    const userCashIn = await createUserService(userCashInData);
 
-    });
+    // Create 5 transactions from userCashOut to userCashIn
+    for (let i = 1; i <= 5; i++) {
+      const value = 10 + i;
 
-    test("Checks if the transaction is filtered by date and by cashOut", async () => {
-        // Create an userCashOut
-        const username = "jose"
-        const password = "1234";
-    
-        const userCashOutData = {username, password};
-        const userCashOut = await createUserService(userCashOutData);
+      (await createTransactionService(
+        userCashOut.account.id,
+        userCashOut.username,
+        userCashIn.username,
+        value,
+      )) as Transaction;
+    }
 
-        // Create another userCashIn
-        const username2 = "carla";
-        const password2 = "1234";
-    
-        const userCashInData = {username: username2, password: password2};
-        const userCashIn = await createUserService(userCashInData);
-        
-        // Create 5 transactions from userCashOut to userCashIn
-        for (let i = 1; i <= 5; i++) {
-            const value = 10 + i;
+    const start_date = new Date().toISOString();
+    const end_date = new Date().toISOString();
 
-            await createTransactionService(
-                userCashOut.account.id, 
-                userCashOut.username, 
-                userCashIn.username, 
-                value) as Transaction;
-        }
+    // Filter transactions by date with cashIn parameter and without cashOut parameter
+    const filteredTransactions: any = await filterTransactionService(
+      userCashIn.account.id,
+      start_date,
+      end_date,
+      true,
+    );
+    const { cashIn } = filteredTransactions;
 
-        const start_date = new Date().toISOString();
-        const end_date = new Date().toISOString();
+    expect(filteredTransactions).toHaveProperty('cashIn');
+    expect(filteredTransactions).not.toHaveProperty('cashOut');
+    expect(cashIn).toHaveLength(5);
+  });
 
-        // Filter transactions by date with cashOut parameter and without cashIn parameter
-        // CashOut from userCashOut
-        const filteredTransactions: any = await filterTransactionService(userCashOut.account.id, start_date, end_date, undefined, true);
-        const {cashOut} = filteredTransactions;
+  test('Checks if the transaction is filtered by date and by cashOut', async () => {
+    // Create an userCashOut
+    const username = 'jose';
+    const password = '1234';
 
-        expect(filteredTransactions).toHaveProperty("cashOut");
-        expect(filteredTransactions).not.toHaveProperty("cashIn");
-        expect(cashOut).toHaveLength(5);
+    const userCashOutData = { username, password };
+    const userCashOut = await createUserService(userCashOutData);
 
-    });
+    // Create another userCashIn
+    const username2 = 'carla';
+    const password2 = '1234';
 
-    test("Checks if the transaction is filtered by date, by cashOut and by cashIn", async () => {
-        // Create an userCashOut
-        const username = "jose"
-        const password = "1234";
-    
-        const userCashOutData = {username, password};
-        const userCashOut = await createUserService(userCashOutData);
+    const userCashInData = { username: username2, password: password2 };
+    const userCashIn = await createUserService(userCashInData);
 
-        // Create another userCashIn
-        const username2 = "carla";
-        const password2 = "1234";
-    
-        const userCashInData = {username: username2, password: password2};
-        const userCashIn = await createUserService(userCashInData);
-        
-        // Create 5 transactions from userCashOut to userCashIn
-        for (let i = 1; i <= 5; i++) {
-            const value = 10 + i;
+    // Create 5 transactions from userCashOut to userCashIn
+    for (let i = 1; i <= 5; i++) {
+      const value = 10 + i;
 
-            await createTransactionService(
-                userCashOut.account.id, 
-                userCashOut.username, 
-                userCashIn.username, 
-                value) as Transaction;
-        }
+      (await createTransactionService(
+        userCashOut.account.id,
+        userCashOut.username,
+        userCashIn.username,
+        value,
+      )) as Transaction;
+    }
 
-        const start_date = new Date().toISOString();
-        const end_date = new Date().toISOString();
+    const start_date = new Date().toISOString();
+    const end_date = new Date().toISOString();
 
-        // Filter transactions by date with cashOut parameter and without cashIn parameter
-        // CashOut from userCashOut
-        const filteredTransactions: any = await filterTransactionService(userCashIn.account.id, start_date, end_date, true, true);
+    // Filter transactions by date with cashOut parameter and without cashIn parameter
+    // CashOut from userCashOut
+    const filteredTransactions: any = await filterTransactionService(
+      userCashOut.account.id,
+      start_date,
+      end_date,
+      undefined,
+      true,
+    );
+    const { cashOut } = filteredTransactions;
 
-        expect(filteredTransactions).toHaveLength(5);
+    expect(filteredTransactions).toHaveProperty('cashOut');
+    expect(filteredTransactions).not.toHaveProperty('cashIn');
+    expect(cashOut).toHaveLength(5);
+  });
 
-    });
-})
+  test('Checks if the transaction is filtered by date, by cashOut and by cashIn', async () => {
+    // Create an userCashOut
+    const username = 'jose';
+    const password = '1234';
+
+    const userCashOutData = { username, password };
+    const userCashOut = await createUserService(userCashOutData);
+
+    // Create another userCashIn
+    const username2 = 'carla';
+    const password2 = '1234';
+
+    const userCashInData = { username: username2, password: password2 };
+    const userCashIn = await createUserService(userCashInData);
+
+    // Create 5 transactions from userCashOut to userCashIn
+    for (let i = 1; i <= 5; i++) {
+      const value = 10 + i;
+
+      (await createTransactionService(
+        userCashOut.account.id,
+        userCashOut.username,
+        userCashIn.username,
+        value,
+      )) as Transaction;
+    }
+
+    const start_date = new Date().toISOString();
+    const end_date = new Date().toISOString();
+
+    // Filter transactions by date with cashOut parameter and without cashIn parameter
+    // CashOut from userCashOut
+    const filteredTransactions: any = await filterTransactionService(
+      userCashIn.account.id,
+      start_date,
+      end_date,
+      true,
+      true,
+    );
+
+    expect(filteredTransactions).toHaveLength(5);
+  });
+});

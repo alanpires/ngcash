@@ -1,342 +1,390 @@
-import { DataSource } from "typeorm";
-import { AppDataSource } from "../../data-source";
-import app from "../../app";
-import request from "supertest";
+import { DataSource } from 'typeorm';
+import { AppDataSource } from '../../data-source';
+import app from '../../app';
+import request from 'supertest';
 
 //Teste de integração
-describe("Testing the transaction routes", () => {
-    let connection: DataSource;
+describe('Testing the transaction routes', () => {
+  let connection: DataSource;
 
-    beforeEach(async () => {
-        await AppDataSource.initialize()
-        .then((res) => connection = res)
-        .catch((err) => {console.error("Error during Data Source initialization", err)});
+  beforeEach(async () => {
+    await AppDataSource.initialize()
+      .then(res => (connection = res))
+      .catch(err => {
+        console.error('Error during Data Source initialization', err);
+      });
+  });
+
+  afterEach(async () => {
+    await connection.destroy();
+  });
+
+  test('Should return an error when trying to create a transaction with invalid data', async () => {
+    // Create an user
+    const username = 'jose';
+    const password = '12345678A';
+    const userData = { username, password };
+    await request(app).post('/create').send(userData);
+
+    // Login user
+    const token = await (
+      await request(app).post('/login').send(userData)
+    ).body.token;
+
+    // Create a transaction
+    const response = await request(app)
+      .post('/transactions')
+      .send({})
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(response.status).toBe(400);
+    expect(response.body).toEqual(
+      expect.objectContaining({
+        error: [
+          'usernameCashIn is a required field',
+          'value is a required field',
+        ],
+      }),
+    );
+  });
+
+  test('Must return a transaction', async () => {
+    // Create an userCashIn
+    const username = 'silvana';
+    const password = '12345678A';
+    const userCashInData = { username, password };
+    const userCashIn = await request(app).post('/create').send(userCashInData);
+
+    // Create an userCashOut
+    const username2 = 'josefina';
+    const password2 = '12345678A';
+    const userCashOutData = { username: username2, password: password2 };
+    const userCashOut = await request(app)
+      .post('/create')
+      .send(userCashOutData);
+
+    // Login userCashOut
+    const token = await (
+      await request(app).post('/login').send(userCashOutData)
+    ).body.token;
+
+    // Create a transaction
+    const usernameCashIn = 'silvana';
+    const value = 10;
+
+    const transactionData = { usernameCashIn, value };
+
+    const response = await request(app)
+      .post('/transactions')
+      .send(transactionData)
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty('id');
+    expect(response.body).toHaveProperty('value');
+    expect(response.body).toHaveProperty('createdAt');
+    expect(response.body).toHaveProperty('debitedAccount');
+    expect(response.body).toHaveProperty('creditedAccount');
+    expect(response.body).toEqual(
+      expect.objectContaining({
+        id: response.body.id,
+        value,
+        createdAt: response.body.createdAt,
+        debitedAccount: {
+          id: userCashOut.body.account.id,
+          user: {
+            id: userCashOut.body.id,
+            username: userCashOut.body.username,
+          },
+        },
+        creditedAccount: {
+          id: userCashIn.body.account.id,
+          user: {
+            id: userCashIn.body.id,
+            username: userCashIn.body.username,
+          },
+        },
+      }),
+    );
+  });
+
+  test('Should return an error if the user does not have enough balance', async () => {
+    // Create an userCashIn
+    const username = 'jose';
+    const password = '12345678A';
+    const userCashInData = { username, password };
+    await request(app).post('/create').send(userCashInData);
+
+    // Create an userCashOut
+    const username2 = 'maria';
+    const password2 = '12345678A';
+    const userCashOutData = { username: username2, password: password2 };
+    await request(app).post('/create').send(userCashOutData);
+
+    // Login userCashOut
+    const token = await (
+      await request(app).post('/login').send(userCashOutData)
+    ).body.token;
+
+    // Create a transaction
+    const usernameCashIn = 'jose';
+    const value = 150;
+
+    const transactionData = { usernameCashIn, value };
+
+    const response = await request(app)
+      .post('/transactions')
+      .send(transactionData)
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(response.status).toBe(400);
+    expect(response.body).toStrictEqual({
+      status: 'error',
+      message: 'You do not have enough balance',
     });
+  });
 
-    afterEach(async () => {
-        await connection.destroy();
+  test('Should return an error if username cashIn is not found', async () => {
+    // Create an userCashIn
+    const username = 'jose';
+    const password = '12345678A';
+    const userCashInData = { username, password };
+    await request(app).post('/create').send(userCashInData);
+
+    // Create an userCashOut
+    const username2 = 'maria';
+    const password2 = '12345678A';
+    const userCashOutData = { username: username2, password: password2 };
+    await request(app).post('/create').send(userCashOutData);
+
+    // Login userCashOut
+    const token = await (
+      await request(app).post('/login').send(userCashOutData)
+    ).body.token;
+
+    // Create a transaction
+    const usernameCashIn = 'paulo';
+    const value = 50;
+
+    const transactionData = { usernameCashIn, value };
+
+    const response = await request(app)
+      .post('/transactions')
+      .send(transactionData)
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(response.status).toBe(400);
+    expect(response.body).toStrictEqual({
+      status: 'error',
+      message: 'User not found.',
     });
+  });
 
-    test("Should return an error when trying to create a transaction with invalid data", async () => {
-        // Create an user
-        const username = "jose";
-        const password = "12345678A";
-        const userData = {username, password};
-        await request(app).post("/create").send(userData);
-        
-        // Login user
-        const token = await (await request(app).post("/login").send(userData)).body.token;
-        
-        // Create a transaction
-        const response = await request(app).post("/transactions").send({}).set("Authorization", `Bearer ${token}`);
+  test('Should return an error if the user tries to make a transfer to himself', async () => {
+    // Create an userCashOut
+    const username2 = 'maria';
+    const password2 = '12345678A';
+    const userCashOutData = { username: username2, password: password2 };
+    await request(app).post('/create').send(userCashOutData);
 
-        expect(response.status).toBe(400)
-        expect(response.body).toEqual(
-            expect.objectContaining({
-                error: [
-                    "usernameCashIn is a required field",
-		            "value is a required field"
-                ]
-            })
-        )
+    // Login userCashOut
+    const token = await (
+      await request(app).post('/login').send(userCashOutData)
+    ).body.token;
+
+    // Create a transaction
+    const usernameCashIn = 'maria';
+    const value = 50;
+
+    const transactionData = { usernameCashIn, value };
+
+    const response = await request(app)
+      .post('/transactions')
+      .send(transactionData)
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(response.status).toBe(400);
+    expect(response.body).toStrictEqual({
+      status: 'error',
+      message: 'You cannot transfer to yourself.',
     });
+  });
 
-    test("Must return a transaction", async () => {
-        // Create an userCashIn
-        const username = "silvana";
-        const password = "12345678A";
-        const userCashInData = {username, password};
-        const userCashIn = await request(app).post("/create").send(userCashInData);
+  test('Should return an error when trying to filter a transaction with invalid data', async () => {
+    // Create an user
+    const username = 'jose';
+    const password = '12345678A';
+    const userData = { username, password };
+    await request(app).post('/create').send(userData);
 
-        // Create an userCashOut
-        const username2 = "josefina";
-        const password2 = "12345678A";
-        const userCashOutData = {username: username2, password: password2};
-        const userCashOut = await request(app).post("/create").send(userCashOutData);
+    // Login user
+    const token = await (
+      await request(app).post('/login').send(userData)
+    ).body.token;
 
-        // Login userCashOut
-        const token = await (await request(app).post("/login").send(userCashOutData)).body.token;
+    // Create a transaction
+    const response = await request(app)
+      .post('/transactions/filter/')
+      .send({})
+      .set('Authorization', `Bearer ${token}`);
 
-        // Create a transaction
-        const usernameCashIn = "silvana";
-        const value = 10;
+    expect(response.status).toBe(400);
+    expect(response.body).toEqual(
+      expect.objectContaining({
+        error: [
+          'start_date is a required field',
+          'end_date is a required field',
+        ],
+      }),
+    );
+  });
 
-        const transactionData = {usernameCashIn, value};
+  test('Checks if the transaction is filtered by date without informing cashin or cashout', async () => {
+    // Create an userCashIn
+    const username = 'miguel';
+    const password = '12345678A';
+    const userCashInData = { username, password };
+    await request(app).post('/create').send(userCashInData);
 
-        const response = await request(app).post("/transactions").send(transactionData).set("Authorization", `Bearer ${token}`);
+    // Create an userCashOut
+    const username2 = 'laura';
+    const password2 = '12345678A';
+    const userCashOutData = { username: username2, password: password2 };
+    await request(app).post('/create').send(userCashOutData);
 
-        expect(response.status).toBe(200);
-        expect(response.body).toHaveProperty("id");
-        expect(response.body).toHaveProperty("value");
-        expect(response.body).toHaveProperty("createdAt");
-        expect(response.body).toHaveProperty("debitedAccount");
-        expect(response.body).toHaveProperty("creditedAccount");
-        expect(response.body).toEqual(
-            expect.objectContaining({
-                id: response.body.id,
-                value,
-                createdAt: response.body.createdAt,
-                debitedAccount: {
-                    id: userCashOut.body.account.id,
-                    user: {
-                        id: userCashOut.body.id,
-                        username: userCashOut.body.username
-                    }
-                },
-                creditedAccount: {
-                    id: userCashIn.body.account.id,
-                    user: {
-                        id: userCashIn.body.id,
-                        username: userCashIn.body.username
-                    }
-                }
-            })
-        )
-    });
+    // Login userCashOut
+    const token = await (
+      await request(app).post('/login').send(userCashOutData)
+    ).body.token;
 
-    test("Should return an error if the user does not have enough balance", async () => {
-        // Create an userCashIn
-        const username = "jose";
-        const password = "12345678A";
-        const userCashInData = {username, password};
-        await request(app).post("/create").send(userCashInData);
+    // Create 5 transactions
+    for (let i = 1; i <= 5; i++) {
+      const usernameCashIn = 'miguel';
+      const value = 15 + i;
 
-        // Create an userCashOut
-        const username2 = "maria";
-        const password2 = "12345678A";
-        const userCashOutData = {username: username2, password: password2};
-        await request(app).post("/create").send(userCashOutData);
+      const transactionData = { usernameCashIn, value };
 
-        // Login userCashOut
-        const token = await (await request(app).post("/login").send(userCashOutData)).body.token;
+      await request(app)
+        .post('/transactions')
+        .send(transactionData)
+        .set('Authorization', `Bearer ${token}`);
+    }
 
-        // Create a transaction
-        const usernameCashIn = "jose";
-        const value = 150;
+    //Filtered transaction
+    const start_date = new Date().toISOString();
+    const end_date = new Date().toISOString();
 
-        const transactionData = {usernameCashIn, value};
+    const transactionFilterData = { start_date, end_date };
 
-        const response = await request(app).post("/transactions").send(transactionData).set("Authorization", `Bearer ${token}`);
+    const response = await request(app)
+      .post('/transactions/filter/')
+      .send(transactionFilterData)
+      .set('Authorization', `Bearer ${token}`);
 
-        expect(response.status).toBe(400);
-        expect(response.body).toStrictEqual({
-            status: "error",
-            message: "You do not have enough balance"
-        })
-        
-    });
+    // const {cashIn, cashOut} = response.body;
 
-    test("Should return an error if username cashIn is not found", async () => {
-        // Create an userCashIn
-        const username = "jose";
-        const password = "12345678A";
-        const userCashInData = {username, password};
-        await request(app).post("/create").send(userCashInData);
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveLength(5);
+  });
 
-        // Create an userCashOut
-        const username2 = "maria";
-        const password2 = "12345678A";
-        const userCashOutData = {username: username2, password: password2};
-        await request(app).post("/create").send(userCashOutData);
+  test('Checks if the transaction is filtered by date and by cashIn', async () => {
+    // Create an userCashIn
+    const username = 'miguel';
+    const password = '12345678A';
+    const userCashInData = { username, password };
+    await request(app).post('/create').send(userCashInData);
 
-        // Login userCashOut
-        const token = await (await request(app).post("/login").send(userCashOutData)).body.token;
+    // Create an userCashOut
+    const username2 = 'laura';
+    const password2 = '12345678A';
+    const userCashOutData = { username: username2, password: password2 };
+    await request(app).post('/create').send(userCashOutData);
 
-        // Create a transaction
-        const usernameCashIn = "paulo";
-        const value = 50;
+    const tokenCashOut = await (
+      await request(app).post('/login').send(userCashOutData)
+    ).body.token;
+    const tokenCashIn = await (
+      await request(app).post('/login').send(userCashInData)
+    ).body.token;
 
-        const transactionData = {usernameCashIn, value};
+    // Create 5 transactions
+    for (let i = 1; i <= 5; i++) {
+      const usernameCashIn = userCashInData.username;
+      const value = 15 + i;
 
-        const response = await request(app).post("/transactions").send(transactionData).set("Authorization", `Bearer ${token}`);
+      const transactionData = { usernameCashIn, value };
 
-        expect(response.status).toBe(400);
-        expect(response.body).toStrictEqual({
-            status: "error",
-            message: "User not found."
-        })
-        
-    });
+      await request(app)
+        .post('/transactions')
+        .send(transactionData)
+        .set('Authorization', `Bearer ${tokenCashOut}`);
+    }
 
-    test("Should return an error if the user tries to make a transfer to himself", async () => {
-        // Create an userCashOut
-        const username2 = "maria";
-        const password2 = "12345678A";
-        const userCashOutData = {username: username2, password: password2};
-        await request(app).post("/create").send(userCashOutData);
+    //Filtered transaction
+    const start_date = new Date().toISOString();
+    const end_date = new Date().toISOString();
 
-        // Login userCashOut
-        const token = await (await request(app).post("/login").send(userCashOutData)).body.token;
+    const transactionFilterData = { start_date, end_date, cashIn: true };
 
-        // Create a transaction
-        const usernameCashIn = "maria";
-        const value = 50;
+    const response = await request(app)
+      .post('/transactions/filter/')
+      .send(transactionFilterData)
+      .set('Authorization', `Bearer ${tokenCashIn}`);
 
-        const transactionData = {usernameCashIn, value};
+    const { cashIn } = response.body;
 
-        const response = await request(app).post("/transactions").send(transactionData).set("Authorization", `Bearer ${token}`);
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty('cashIn');
+    expect(response.body).not.toHaveProperty('cashOut');
+    expect(cashIn).toHaveLength(5);
+  });
 
-        expect(response.status).toBe(400);
-        expect(response.body).toStrictEqual({
-            status: "error",
-            message: "You cannot transfer to yourself."
-        })
-        
-    });
+  test('Checks if the transaction is filtered by date and by cashOut', async () => {
+    // Create an userCashIn
+    const username = 'miguel';
+    const password = '12345678A';
+    const userCashInData = { username, password };
+    await request(app).post('/create').send(userCashInData);
 
-    test("Should return an error when trying to filter a transaction with invalid data", async () => {
-        // Create an user
-        const username = "jose";
-        const password = "12345678A";
-        const userData = {username, password};
-        await request(app).post("/create").send(userData);
-        
-        // Login user
-        const token = await (await request(app).post("/login").send(userData)).body.token;
-        
-        // Create a transaction
-        const response = await request(app).post("/transactions/filter/").send({}).set("Authorization", `Bearer ${token}`);
+    // Create an userCashOut
+    const username2 = 'laura';
+    const password2 = '12345678A';
+    const userCashOutData = { username: username2, password: password2 };
+    await request(app).post('/create').send(userCashOutData);
 
-        expect(response.status).toBe(400)
-        expect(response.body).toEqual(
-            expect.objectContaining({
-                error: [
-                    "start_date is a required field",
-		            "end_date is a required field"
-                ]
-            })
-        )
-    });
+    const tokenCashOut = await (
+      await request(app).post('/login').send(userCashOutData)
+    ).body.token;
 
-    test("Checks if the transaction is filtered by date without informing cashin or cashout", async () => {
-        // Create an userCashIn
-        const username = "miguel";
-        const password = "12345678A";
-        const userCashInData = {username, password};
-        await request(app).post("/create").send(userCashInData);
+    // Create 5 transactions
+    for (let i = 1; i <= 5; i++) {
+      const usernameCashIn = userCashInData.username;
+      const value = 15 + i;
 
-        // Create an userCashOut
-        const username2 = "laura";
-        const password2 = "12345678A";
-        const userCashOutData = {username: username2, password: password2};
-        await request(app).post("/create").send(userCashOutData);
+      const transactionData = { usernameCashIn, value };
 
-        // Login userCashOut
-        const token = await (await request(app).post("/login").send(userCashOutData)).body.token;
+      await request(app)
+        .post('/transactions')
+        .send(transactionData)
+        .set('Authorization', `Bearer ${tokenCashOut}`);
+    }
 
-        // Create 5 transactions
-        for (let i = 1; i <= 5; i++) {
-            const usernameCashIn = "miguel";
-            const value = 15 + i;
-    
-            const transactionData = {usernameCashIn, value};
-    
-            await request(app).post("/transactions").send(transactionData).set("Authorization", `Bearer ${token}`);
+    //Filtered transaction
+    const start_date = new Date().toISOString();
+    const end_date = new Date().toISOString();
 
-        }
-        
-        //Filtered transaction
-        const start_date = new Date().toISOString();
-        const end_date = new Date().toISOString();
+    const transactionFilterData = { start_date, end_date, cashOut: true };
 
-        const transactionFilterData = {start_date, end_date}
+    const response = await request(app)
+      .post('/transactions/filter/')
+      .send(transactionFilterData)
+      .set('Authorization', `Bearer ${tokenCashOut}`);
 
-        const response = await request(app).post("/transactions/filter/").send(transactionFilterData).set("Authorization", `Bearer ${token}`);
+    const { cashOut } = response.body;
 
-        // const {cashIn, cashOut} = response.body;
-
-        expect(response.status).toBe(200);
-        expect(response.body).toHaveLength(5);
-        
-    });
-
-    test("Checks if the transaction is filtered by date and by cashIn", async () => {
-        // Create an userCashIn
-        const username = "miguel";
-        const password = "12345678A";
-        const userCashInData = {username, password};
-        await request(app).post("/create").send(userCashInData);
-
-        // Create an userCashOut
-        const username2 = "laura";
-        const password2 = "12345678A";
-        const userCashOutData = {username: username2, password: password2};
-        await request(app).post("/create").send(userCashOutData);
-
-        const tokenCashOut = await (await request(app).post("/login").send(userCashOutData)).body.token;
-        const tokenCashIn = await (await request(app).post("/login").send(userCashInData)).body.token;
-
-        // Create 5 transactions
-        for (let i = 1; i <= 5; i++) {
-            const usernameCashIn = userCashInData.username;
-            const value = 15 + i;
-    
-            const transactionData = {usernameCashIn, value};
-    
-            await request(app).post("/transactions").send(transactionData).set("Authorization", `Bearer ${tokenCashOut}`);
-
-        }
-        
-        //Filtered transaction
-        const start_date = new Date().toISOString();
-        const end_date = new Date().toISOString();
-
-        const transactionFilterData = {start_date, end_date, cashIn: true}
-
-        const response = await request(app).post("/transactions/filter/").send(transactionFilterData).set("Authorization", `Bearer ${tokenCashIn}`);
-
-        const {cashIn} = response.body;
-
-        expect(response.status).toBe(200);
-        expect(response.body).toHaveProperty("cashIn");
-        expect(response.body).not.toHaveProperty("cashOut");
-        expect(cashIn).toHaveLength(5);
-        
-    });
-
-    test("Checks if the transaction is filtered by date and by cashOut", async () => {
-        // Create an userCashIn
-        const username = "miguel";
-        const password = "12345678A";
-        const userCashInData = {username, password};
-        await request(app).post("/create").send(userCashInData);
-
-        // Create an userCashOut
-        const username2 = "laura";
-        const password2 = "12345678A";
-        const userCashOutData = {username: username2, password: password2};
-        await request(app).post("/create").send(userCashOutData);
-
-        const tokenCashOut = await (await request(app).post("/login").send(userCashOutData)).body.token;
-
-        // Create 5 transactions
-        for (let i = 1; i <= 5; i++) {
-            const usernameCashIn = userCashInData.username;
-            const value = 15 + i;
-    
-            const transactionData = {usernameCashIn, value};
-    
-            await request(app).post("/transactions").send(transactionData).set("Authorization", `Bearer ${tokenCashOut}`);
-
-        }
-        
-        //Filtered transaction
-        const start_date = new Date().toISOString();
-        const end_date = new Date().toISOString();
-
-        const transactionFilterData = {start_date, end_date, cashOut: true}
-
-        const response = await request(app).post("/transactions/filter/").send(transactionFilterData).set("Authorization", `Bearer ${tokenCashOut}`);
-
-        const {cashOut} = response.body;
-
-        expect(response.status).toBe(200);
-        expect(response.body).toHaveProperty("cashOut");
-        expect(response.body).not.toHaveProperty("cashIn");
-        expect(cashOut).toHaveLength(5);
-        
-    });
-
-
-
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty('cashOut');
+    expect(response.body).not.toHaveProperty('cashIn');
+    expect(cashOut).toHaveLength(5);
+  });
 });

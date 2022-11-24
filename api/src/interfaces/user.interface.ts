@@ -1,16 +1,16 @@
 import { AccountInterface } from './account.interface';
 export interface UserInterface {
-    username: string,
-    password: string
+  username: string;
+  password: string;
 }
 
 export interface ReturnUserInterface {
-    username: string
+  username: string;
 }
 
 export interface UserAccountInterface {
-    id: string,
-    username: string,
-    password: string,
-    account: AccountInterface
+  id: string;
+  username: string;
+  password: string;
+  account: AccountInterface;
 }

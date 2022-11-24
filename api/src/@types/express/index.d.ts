@@ -1,15 +1,15 @@
 import { UserInterface } from './../../interfaces/user.interface';
-import * as express from "express";
+import * as express from 'express';
 
 declare global {
-    namespace Express {
-        interface Request {
-            user: {
-                userId: string,
-                username: string,
-                accountId: string
-            },
-            validateUser: UserInterface
-        }
+  namespace Express {
+    interface Request {
+      user: {
+        userId: string;
+        username: string;
+        accountId: string;
+      };
+      validateUser: UserInterface;
     }
+  }
 }
