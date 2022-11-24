@@ -8,9 +8,11 @@ import TableRow from '@mui/material/TableRow';
 export default function TransactionTable({
   getTransactions, ccyFormat, invoiceTotal,
 }) {
-  const createRow = (ID, createdAt, destinationAccount, type, value) => ({
-    ID, createdAt, destinationAccount, type, value,
-  });
+
+  const createRow = (ID, createdAt, destinationAccount, type, value) => {
+    const date = new Date(createdAt).toLocaleDateString()
+    return ({ID, createdAt: date, destinationAccount, type, value})
+  }
 
   const rows = (transactionsArray) => {
     const rowsList = [];
@@ -41,7 +43,10 @@ export default function TransactionTable({
     return rowsList;
   };
 
+
+
   const rowsList = rows(getTransactions);
+
 
   return (
     <div>
@@ -67,12 +72,12 @@ export default function TransactionTable({
               <TableCell align="right">{row.createdAt}</TableCell>
               <TableCell align="right">{row.destinationAccount}</TableCell>
               <TableCell align="right">{row.type}</TableCell>
-              <TableCell align="right">{row.value}</TableCell>
+              {row.type === 'cashIn' ? (<TableCell align="right" style={{ color: "green" }}>{row.value}</TableCell>) : (<TableCell align="right" style={{ color: "red" }}>{row.value}</TableCell>)}
             </TableRow>
           ))}
           <TableRow>
-            <TableCell colSpan={4}>Saldo atual</TableCell>
-            <TableCell align="right">{ccyFormat(invoiceTotal)}</TableCell>
+            <TableCell colSpan={4} style={{ fontWeight: "bold" }}>Saldo atual</TableCell>
+            <TableCell align="right" style={{ fontWeight: "bold" }}>{ccyFormat(invoiceTotal)}</TableCell>
           </TableRow>
         </TableBody>
       </Table>

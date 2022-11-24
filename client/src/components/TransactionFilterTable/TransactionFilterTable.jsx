@@ -11,9 +11,10 @@ export default function TransactionFilterTable({
 }) {
   let transactions = transactionsFilter;
 
-  const createRow = (ID, createdAt, destinationAccount, type, value) => ({
-    ID, createdAt, destinationAccount, type, value,
-  });
+  const createRow = (ID, createdAt, destinationAccount, type, value) => {
+    const date = new Date(createdAt).toLocaleDateString()
+    return ({ID, createdAt: date, destinationAccount, type, value})
+  }
   const rows = (transactionsArray) => {
     const rowsList = [];
 
@@ -49,7 +50,13 @@ export default function TransactionFilterTable({
     transactions = transactionsFilter.cashOut;
   }
 
+  function subtotal(items) {
+    return items.map(({ value }) => value).reduce((sum, i) => sum + i, 0);
+  }
+
   const rowsList = rows(transactions);
+
+  const invoiceSubtotal = subtotal(rowsList);
 
   return (
     <div>
@@ -76,12 +83,20 @@ export default function TransactionFilterTable({
               <TableCell align="right">{row.createdAt}</TableCell>
               <TableCell align="right">{row.destinationAccount}</TableCell>
               <TableCell align="right">{row.type}</TableCell>
-              <TableCell align="right">{row.value}</TableCell>
+              {row.type === 'cashIn' ? (<TableCell align="right" style={{ color: "green" }}>{row.value}</TableCell>) : (<TableCell align="right" style={{ color: "red" }}>{row.value}</TableCell>)}
             </TableRow>
           ))}
+           <TableRow>
+            <TableCell rowSpan={2}/>
+            <TableCell rowSpan={2}/>
+            <TableCell style={{ fontWeight: "bold" }}>Subtotal</TableCell>
+            <TableCell/>
+            <TableCell align="right" style={{ fontWeight: "bold" }}>{ccyFormat(invoiceSubtotal)}</TableCell>
+          </TableRow>
           <TableRow>
-            <TableCell colSpan={4}>Saldo atual</TableCell>
-            <TableCell align="right">{ccyFormat(invoiceTotal)}</TableCell>
+            <TableCell style={{ fontWeight: "bold" }}>Saldo atual</TableCell>
+            <TableCell/>
+            <TableCell align="right" style={{ fontWeight: "bold" }}>{ccyFormat(invoiceTotal)}</TableCell>
           </TableRow>
         </TableBody>
       </Table>

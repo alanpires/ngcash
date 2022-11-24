@@ -8,6 +8,7 @@ import TransactionTable from '../TransactionTable/TransactionTable';
 import DatePicker from '../DatePicker/DatePicker';
 import Select from '../Select/Select';
 import TransactionFilterTable from '../TransactionFilterTable/TransactionFilterTable';
+import Typography from '@material-ui/core/Typography';
 
 const config = (token) => ({
   headers: {
@@ -42,6 +43,8 @@ async function reqTransactionsFilter(token, data) {
 const useStyles = makeStyles(() => ({
   saldo: {
     marginLeft: '1%',
+    marginTop: '1%',
+    fontWeight: 'bold'
   },
   filter: {
     display: 'flex',
@@ -105,11 +108,9 @@ export default function Dashboard({ userToken }) {
   return (
     <div>
       <TableContainer component={Paper}>
-        <h3 className={classes.saldo}>
-          Saldo: R$
-          {' '}
-          {ccyFormat(invoiceTotal)}
-        </h3>
+      <Typography variant="h5" className={classes.saldo}>
+        Saldo: R$ {ccyFormat(invoiceTotal)}
+      </Typography>
         <div className={classes.filter}>
           <DatePicker setDate={setStartDate} label={startDateLabel} />
           <DatePicker setDate={setEndDate} label={endDateLabel} />
