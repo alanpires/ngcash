@@ -15,6 +15,7 @@ export default function TransactionFilterTable({
     const date = new Date(createdAt).toLocaleDateString()
     return ({ID, createdAt: date, destinationAccount, type, value})
   }
+
   const rows = (transactionsArray) => {
     const rowsList = [];
 
@@ -44,10 +45,29 @@ export default function TransactionFilterTable({
     return rowsList;
   };
 
-  if (Object.prototype.hasOwnProperty.call(transactionsFilter, 'cashIn')) {
+
+
+  if (Object.prototype.hasOwnProperty.call(transactionsFilter, 'cashIn') && !Object.prototype.hasOwnProperty.call(transactionsFilter, 'cashOut')) {
     transactions = transactionsFilter.cashIn;
-  } else if (Object.prototype.hasOwnProperty.call(transactionsFilter, 'cashOut')) {
+  } else if (Object.prototype.hasOwnProperty.call(transactionsFilter, 'cashOut') && !Object.prototype.hasOwnProperty.call(transactionsFilter, 'cashIn')) {
     transactions = transactionsFilter.cashOut;
+  } else if (Object.prototype.hasOwnProperty.call(transactionsFilter, 'cashIn') && Object.prototype.hasOwnProperty.call(transactionsFilter, 'cashOut')){
+    const allTransactions = [];
+
+    for (let i = 0; i < transactions.cashIn.length; i += 1) {
+      allTransactions.push(transactions.cashIn[i])
+    }
+
+    for (let i = 0; i < transactions.cashOut.length; i += 1) {
+      allTransactions.push(transactions.cashOut[i])
+    }
+
+    allTransactions.sort((a, b) => {
+      return a.createdAt < b.createdAt ? -1 : a.createdAt > b.createdAt ? 1 : 0;
+    });
+
+    transactions = allTransactions;
+
   }
 
   const rowsList = rows(transactions);

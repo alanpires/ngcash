@@ -90,19 +90,13 @@ export const filterTransactionService = async (
     endDateConverted,
   );
 
-  const allTransactions = [];
+  let allTransactions: any = {
+    cashIn,
+    cashOut,
+  };
 
-  for (let i = 0; i < transactionsCashOut.length; i++) {
-    allTransactions.push(transactionsCashOut[i]);
-  }
-
-  for (let i = 0; i < transactionsCashIn.length; i++) {
-    allTransactions.push(transactionsCashIn[i]);
-  }
-
-  allTransactions.sort((a, b) => {
-    return a.createdAt < b.createdAt ? -1 : a.createdAt > b.createdAt ? 1 : 0;
-  });
+  allTransactions.cashIn = transactionsCashIn;
+  allTransactions.cashOut = transactionsCashOut;
 
   if (cashOut && !cashIn) {
     return { cashOut: transactionsCashOut };
