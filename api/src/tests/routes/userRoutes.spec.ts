@@ -29,7 +29,7 @@ describe("Testing the user routes", () => {
 
         const userData = {username, password};
 
-        const response = await request(app).post("/api/create/").send(userData)
+        const response = await request(app).post("/create").send(userData)
 
         expect(response.status).toBe(201);
         expect(response.body).not.toHaveProperty("password");
@@ -46,7 +46,7 @@ describe("Testing the user routes", () => {
     });
 
     test("It should fail to create the user without any information in the request body", async () => {
-        const response = await request(app).post("/api/create/").send({})
+        const response = await request(app).post("/create").send({})
 
         expect(response.status).toBe(400);
         expect(response.body).toStrictEqual({
@@ -63,7 +63,7 @@ describe("Testing the user routes", () => {
 
         const userData = {username, password};
         
-        const response = await request(app).post("/api/create/").send(userData);
+        const response = await request(app).post("/create").send(userData);
 
         expect(response.status).toBe(400);
         expect(response.body).toStrictEqual({
@@ -79,7 +79,7 @@ describe("Testing the user routes", () => {
 
         const userData = {username, password};
         
-        const response = await request(app).post("/api/create/").send(userData);
+        const response = await request(app).post("/create").send(userData);
 
         expect(response.status).toBe(400);
         expect(response.body).toStrictEqual({
@@ -96,7 +96,7 @@ describe("Testing the user routes", () => {
 
         const userData = {username, password};
         
-        const response = await request(app).post("/api/create/").send(userData);
+        const response = await request(app).post("/create").send(userData);
 
         expect(response.status).toBe(400);
         expect(response.body).toStrictEqual({
@@ -114,9 +114,9 @@ describe("Testing the user routes", () => {
 
         const userData = {username, password};
         
-        await request(app).post("/api/create/").send(userData);
+        await request(app).post("/create").send(userData);
 
-        const response = await request(app).post("/api/create/").send(userData);
+        const response = await request(app).post("/create").send(userData);
 
         expect(response.status).toBe(400);
         expect(response.body).toStrictEqual({

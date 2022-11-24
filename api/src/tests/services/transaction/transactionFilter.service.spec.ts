@@ -47,13 +47,9 @@ describe("Filter a transaction", () => {
         const end_date = new Date().toISOString();
 
         // Filter transactions by date and whitout cashIn and cashOut parameter
-        const filteredTransactions = await filterTransactionService(userCashIn.account.id, start_date, end_date);
-        const {cashIn, cashOut} = filteredTransactions;
+        const filteredTransactions: any = await filterTransactionService(userCashIn.account.id, start_date, end_date);
 
-        expect(filteredTransactions).toHaveProperty("cashIn");
-        expect(filteredTransactions).toHaveProperty("cashOut");
-        expect(cashIn).toHaveLength(5);
-        expect(cashOut).toHaveLength(0);
+        expect(filteredTransactions).toHaveLength(5)
 
     });
 
@@ -87,7 +83,7 @@ describe("Filter a transaction", () => {
         const end_date = new Date().toISOString();
 
         // Filter transactions by date with cashIn parameter and without cashOut parameter
-        const filteredTransactions = await filterTransactionService(userCashIn.account.id, start_date, end_date, true);
+        const filteredTransactions: any = await filterTransactionService(userCashIn.account.id, start_date, end_date, true);
         const {cashIn} = filteredTransactions;
 
         expect(filteredTransactions).toHaveProperty("cashIn");
@@ -127,7 +123,7 @@ describe("Filter a transaction", () => {
 
         // Filter transactions by date with cashOut parameter and without cashIn parameter
         // CashOut from userCashOut
-        const filteredTransactions = await filterTransactionService(userCashOut.account.id, start_date, end_date, undefined, true);
+        const filteredTransactions: any = await filterTransactionService(userCashOut.account.id, start_date, end_date, undefined, true);
         const {cashOut} = filteredTransactions;
 
         expect(filteredTransactions).toHaveProperty("cashOut");
@@ -167,13 +163,9 @@ describe("Filter a transaction", () => {
 
         // Filter transactions by date with cashOut parameter and without cashIn parameter
         // CashOut from userCashOut
-        const filteredTransactions = await filterTransactionService(userCashIn.account.id, start_date, end_date, true, true);
-        const {cashIn, cashOut} = filteredTransactions;
+        const filteredTransactions: any = await filterTransactionService(userCashIn.account.id, start_date, end_date, true, true);
 
-        expect(filteredTransactions).toHaveProperty("cashIn");
-        expect(filteredTransactions).toHaveProperty("cashOut");
-        expect(cashIn).toHaveLength(5);
-        expect(cashOut).toHaveLength(0);
+        expect(filteredTransactions).toHaveLength(5);
 
     });
 })

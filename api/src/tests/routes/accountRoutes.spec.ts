@@ -30,13 +30,13 @@ describe("Testing the account routes", () => {
 
         const userData = {username, password};
 
-        const user = await request(app).post("/api/create/").send(userData);
+        const user = await request(app).post("/create").send(userData);
 
         // Login user
-        const token = await (await request(app).post("/api/login/").send(userData)).body.token;
+        const token = await (await request(app).post("/login").send(userData)).body.token;
 
         // List accounts
-        const response = await request(app).get("/api/accounts/").set("Authorization", `Bearer ${token}`);
+        const response = await request(app).get("/accounts").set("Authorization", `Bearer ${token}`);
 
         expect(response.status).toBe(200);
         expect(response.body).toHaveProperty("id");

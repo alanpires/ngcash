@@ -644,26 +644,29 @@
         }
       },
       "TransactionListed": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "example": "220a1be2-3203-484f-bdc6-d13448dd7114"
-          },
-          "value": {
-            "type": "number",
-            "example": 10
-          },
-          "createdAt": {
-            "type": "string",
-            "example": "2022-11-18T18:13:22.685Z"
-          },
-          "creditedAccount": {
-            "type": "object",
-            "properties": {
-              "id": {
-                "type": "string",
-                "example": "b1cc2f78-68e9-48c3-81b1-6fe08a902d48"
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "example": "220a1be2-3203-484f-bdc6-d13448dd7114"
+            },
+            "value": {
+              "type": "number",
+              "example": 10
+            },
+            "createdAt": {
+              "type": "string",
+              "example": "2022-11-18T18:13:22.685Z"
+            },
+            "creditedAccount": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "example": "b1cc2f78-68e9-48c3-81b1-6fe08a902d48"
+                }
               }
             }
           }

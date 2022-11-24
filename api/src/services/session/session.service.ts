@@ -25,7 +25,7 @@ export const loginService = async ({username, password}: UserInterface) => {
             accountId: user.account.id
         }, 
         process.env.SECRET_KEY as string, 
-        {expiresIn: process.env.EXPIRES_IN});
+        {expiresIn: process.env.EXPIRES_IN})
 
     return {token: token};
 

@@ -18,12 +18,4 @@ export const UserRepository = AppDataSource.getRepository(User).extend({
         })
     },
 
-    // findByUsername2(username: string) {
-    //     return this.findOne({
-    //         where: {
-    //             username: username
-    //         }
-    //     })
-    // }
-
 });

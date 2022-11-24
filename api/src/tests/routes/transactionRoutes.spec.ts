@@ -7,13 +7,13 @@ import request from "supertest";
 describe("Testing the transaction routes", () => {
     let connection: DataSource;
 
-    beforeAll(async () => {
+    beforeEach(async () => {
         await AppDataSource.initialize()
         .then((res) => connection = res)
         .catch((err) => {console.error("Error during Data Source initialization", err)});
     });
 
-    afterAll(async () => {
+    afterEach(async () => {
         await connection.destroy();
     });
 
@@ -22,13 +22,13 @@ describe("Testing the transaction routes", () => {
         const username = "jose";
         const password = "12345678A";
         const userData = {username, password};
-        await request(app).post("/api/create/").send(userData);
+        await request(app).post("/create").send(userData);
         
         // Login user
-        const token = await (await request(app).post("/api/login/").send(userData)).body.token;
+        const token = await (await request(app).post("/login").send(userData)).body.token;
         
         // Create a transaction
-        const response = await request(app).post("/api/transactions/").send({}).set("Authorization", `Bearer ${token}`);
+        const response = await request(app).post("/transactions").send({}).set("Authorization", `Bearer ${token}`);
 
         expect(response.status).toBe(400)
         expect(response.body).toEqual(
@@ -46,16 +46,16 @@ describe("Testing the transaction routes", () => {
         const username = "silvana";
         const password = "12345678A";
         const userCashInData = {username, password};
-        const userCashIn = await request(app).post("/api/create/").send(userCashInData);
+        const userCashIn = await request(app).post("/create").send(userCashInData);
 
         // Create an userCashOut
         const username2 = "josefina";
         const password2 = "12345678A";
         const userCashOutData = {username: username2, password: password2};
-        const userCashOut = await request(app).post("/api/create/").send(userCashOutData);
+        const userCashOut = await request(app).post("/create").send(userCashOutData);
 
         // Login userCashOut
-        const token = await (await request(app).post("/api/login/").send(userCashOutData)).body.token;
+        const token = await (await request(app).post("/login").send(userCashOutData)).body.token;
 
         // Create a transaction
         const usernameCashIn = "silvana";
@@ -63,7 +63,7 @@ describe("Testing the transaction routes", () => {
 
         const transactionData = {usernameCashIn, value};
 
-        const response = await request(app).post("/api/transactions/").send(transactionData).set("Authorization", `Bearer ${token}`);
+        const response = await request(app).post("/transactions").send(transactionData).set("Authorization", `Bearer ${token}`);
 
         expect(response.status).toBe(200);
         expect(response.body).toHaveProperty("id");
@@ -99,16 +99,16 @@ describe("Testing the transaction routes", () => {
         const username = "jose";
         const password = "12345678A";
         const userCashInData = {username, password};
-        await request(app).post("/api/create/").send(userCashInData);
+        await request(app).post("/create").send(userCashInData);
 
         // Create an userCashOut
         const username2 = "maria";
         const password2 = "12345678A";
         const userCashOutData = {username: username2, password: password2};
-        await request(app).post("/api/create/").send(userCashOutData);
+        await request(app).post("/create").send(userCashOutData);
 
         // Login userCashOut
-        const token = await (await request(app).post("/api/login/").send(userCashOutData)).body.token;
+        const token = await (await request(app).post("/login").send(userCashOutData)).body.token;
 
         // Create a transaction
         const usernameCashIn = "jose";
@@ -116,7 +116,7 @@ describe("Testing the transaction routes", () => {
 
         const transactionData = {usernameCashIn, value};
 
-        const response = await request(app).post("/api/transactions/").send(transactionData).set("Authorization", `Bearer ${token}`);
+        const response = await request(app).post("/transactions").send(transactionData).set("Authorization", `Bearer ${token}`);
 
         expect(response.status).toBe(400);
         expect(response.body).toStrictEqual({
@@ -131,16 +131,16 @@ describe("Testing the transaction routes", () => {
         const username = "jose";
         const password = "12345678A";
         const userCashInData = {username, password};
-        await request(app).post("/api/create/").send(userCashInData);
+        await request(app).post("/create").send(userCashInData);
 
         // Create an userCashOut
         const username2 = "maria";
         const password2 = "12345678A";
         const userCashOutData = {username: username2, password: password2};
-        await request(app).post("/api/create/").send(userCashOutData);
+        await request(app).post("/create").send(userCashOutData);
 
         // Login userCashOut
-        const token = await (await request(app).post("/api/login/").send(userCashOutData)).body.token;
+        const token = await (await request(app).post("/login").send(userCashOutData)).body.token;
 
         // Create a transaction
         const usernameCashIn = "paulo";
@@ -148,7 +148,7 @@ describe("Testing the transaction routes", () => {
 
         const transactionData = {usernameCashIn, value};
 
-        const response = await request(app).post("/api/transactions/").send(transactionData).set("Authorization", `Bearer ${token}`);
+        const response = await request(app).post("/transactions").send(transactionData).set("Authorization", `Bearer ${token}`);
 
         expect(response.status).toBe(400);
         expect(response.body).toStrictEqual({
@@ -163,10 +163,10 @@ describe("Testing the transaction routes", () => {
         const username2 = "maria";
         const password2 = "12345678A";
         const userCashOutData = {username: username2, password: password2};
-        await request(app).post("/api/create/").send(userCashOutData);
+        await request(app).post("/create").send(userCashOutData);
 
         // Login userCashOut
-        const token = await (await request(app).post("/api/login/").send(userCashOutData)).body.token;
+        const token = await (await request(app).post("/login").send(userCashOutData)).body.token;
 
         // Create a transaction
         const usernameCashIn = "maria";
@@ -174,7 +174,7 @@ describe("Testing the transaction routes", () => {
 
         const transactionData = {usernameCashIn, value};
 
-        const response = await request(app).post("/api/transactions/").send(transactionData).set("Authorization", `Bearer ${token}`);
+        const response = await request(app).post("/transactions").send(transactionData).set("Authorization", `Bearer ${token}`);
 
         expect(response.status).toBe(400);
         expect(response.body).toStrictEqual({
@@ -189,13 +189,13 @@ describe("Testing the transaction routes", () => {
         const username = "jose";
         const password = "12345678A";
         const userData = {username, password};
-        await request(app).post("/api/create/").send(userData);
+        await request(app).post("/create").send(userData);
         
         // Login user
-        const token = await (await request(app).post("/api/login/").send(userData)).body.token;
+        const token = await (await request(app).post("/login").send(userData)).body.token;
         
         // Create a transaction
-        const response = await request(app).post("/api/transactions/filter/").send({}).set("Authorization", `Bearer ${token}`);
+        const response = await request(app).post("/transactions/filter/").send({}).set("Authorization", `Bearer ${token}`);
 
         expect(response.status).toBe(400)
         expect(response.body).toEqual(
@@ -213,16 +213,16 @@ describe("Testing the transaction routes", () => {
         const username = "miguel";
         const password = "12345678A";
         const userCashInData = {username, password};
-        await request(app).post("/api/create/").send(userCashInData);
+        await request(app).post("/create").send(userCashInData);
 
         // Create an userCashOut
         const username2 = "laura";
         const password2 = "12345678A";
         const userCashOutData = {username: username2, password: password2};
-        await request(app).post("/api/create/").send(userCashOutData);
+        await request(app).post("/create").send(userCashOutData);
 
         // Login userCashOut
-        const token = await (await request(app).post("/api/login/").send(userCashOutData)).body.token;
+        const token = await (await request(app).post("/login").send(userCashOutData)).body.token;
 
         // Create 5 transactions
         for (let i = 1; i <= 5; i++) {
@@ -231,7 +231,7 @@ describe("Testing the transaction routes", () => {
     
             const transactionData = {usernameCashIn, value};
     
-            await request(app).post("/api/transactions/").send(transactionData).set("Authorization", `Bearer ${token}`);
+            await request(app).post("/transactions").send(transactionData).set("Authorization", `Bearer ${token}`);
 
         }
         
@@ -241,15 +241,12 @@ describe("Testing the transaction routes", () => {
 
         const transactionFilterData = {start_date, end_date}
 
-        const response = await request(app).post("/api/transactions/filter/").send(transactionFilterData).set("Authorization", `Bearer ${token}`);
+        const response = await request(app).post("/transactions/filter/").send(transactionFilterData).set("Authorization", `Bearer ${token}`);
 
-        const {cashIn, cashOut} = response.body;
+        // const {cashIn, cashOut} = response.body;
 
         expect(response.status).toBe(200);
-        expect(response.body).toHaveProperty("cashIn");
-        expect(response.body).toHaveProperty("cashOut");
-        expect(cashIn).toHaveLength(0);
-        expect(cashOut).toHaveLength(5);
+        expect(response.body).toHaveLength(5);
         
     });
 
@@ -258,25 +255,25 @@ describe("Testing the transaction routes", () => {
         const username = "miguel";
         const password = "12345678A";
         const userCashInData = {username, password};
-        await request(app).post("/api/create/").send(userCashInData);
+        await request(app).post("/create").send(userCashInData);
 
         // Create an userCashOut
         const username2 = "laura";
         const password2 = "12345678A";
         const userCashOutData = {username: username2, password: password2};
-        await request(app).post("/api/create/").send(userCashOutData);
+        await request(app).post("/create").send(userCashOutData);
 
-        // Login userCashOut
-        const token = await (await request(app).post("/api/login/").send(userCashInData)).body.token;
+        const tokenCashOut = await (await request(app).post("/login").send(userCashOutData)).body.token;
+        const tokenCashIn = await (await request(app).post("/login").send(userCashInData)).body.token;
 
         // Create 5 transactions
         for (let i = 1; i <= 5; i++) {
-            const usernameCashIn = "miguel";
+            const usernameCashIn = userCashInData.username;
             const value = 15 + i;
     
             const transactionData = {usernameCashIn, value};
     
-            await request(app).post("/api/transactions/").send(transactionData).set("Authorization", `Bearer ${token}`);
+            await request(app).post("/transactions").send(transactionData).set("Authorization", `Bearer ${tokenCashOut}`);
 
         }
         
@@ -286,7 +283,7 @@ describe("Testing the transaction routes", () => {
 
         const transactionFilterData = {start_date, end_date, cashIn: true}
 
-        const response = await request(app).post("/api/transactions/filter/").send(transactionFilterData).set("Authorization", `Bearer ${token}`);
+        const response = await request(app).post("/transactions/filter/").send(transactionFilterData).set("Authorization", `Bearer ${tokenCashIn}`);
 
         const {cashIn} = response.body;
 
@@ -302,25 +299,24 @@ describe("Testing the transaction routes", () => {
         const username = "miguel";
         const password = "12345678A";
         const userCashInData = {username, password};
-        await request(app).post("/api/create/").send(userCashInData);
+        await request(app).post("/create").send(userCashInData);
 
         // Create an userCashOut
         const username2 = "laura";
         const password2 = "12345678A";
         const userCashOutData = {username: username2, password: password2};
-        await request(app).post("/api/create/").send(userCashOutData);
+        await request(app).post("/create").send(userCashOutData);
 
-        // Login userCashOut
-        const token = await (await request(app).post("/api/login/").send(userCashOutData)).body.token;
+        const tokenCashOut = await (await request(app).post("/login").send(userCashOutData)).body.token;
 
         // Create 5 transactions
         for (let i = 1; i <= 5; i++) {
-            const usernameCashIn = "miguel";
+            const usernameCashIn = userCashInData.username;
             const value = 15 + i;
     
-            const transactionData = {usernameCashIn, value, cashOut: true};
+            const transactionData = {usernameCashIn, value};
     
-            await request(app).post("/api/transactions/").send(transactionData).set("Authorization", `Bearer ${token}`);
+            await request(app).post("/transactions").send(transactionData).set("Authorization", `Bearer ${tokenCashOut}`);
 
         }
         
@@ -328,15 +324,15 @@ describe("Testing the transaction routes", () => {
         const start_date = new Date().toISOString();
         const end_date = new Date().toISOString();
 
-        const transactionFilterData = {start_date, end_date}
+        const transactionFilterData = {start_date, end_date, cashOut: true}
 
-        const response = await request(app).post("/api/transactions/filter/").send(transactionFilterData).set("Authorization", `Bearer ${token}`);
+        const response = await request(app).post("/transactions/filter/").send(transactionFilterData).set("Authorization", `Bearer ${tokenCashOut}`);
 
         const {cashOut} = response.body;
 
         expect(response.status).toBe(200);
         expect(response.body).toHaveProperty("cashOut");
-        expect(response.body).toHaveProperty("cashIn");
+        expect(response.body).not.toHaveProperty("cashIn");
         expect(cashOut).toHaveLength(5);
         
     });

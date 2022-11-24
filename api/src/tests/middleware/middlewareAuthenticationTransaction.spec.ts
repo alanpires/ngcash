@@ -24,10 +24,10 @@ describe("Testing the middleware authentication with the transaction routes", ()
 
         const userData = {username, password};
 
-        await request(app).post("/api/create/").send(userData);
+        await request(app).post("/create/").send(userData);
 
         // Login user
-        await (await request(app).post("/api/login/").send(userData)).body.token;
+        await (await request(app).post("/login/").send(userData)).body.token;
 
         const usernameCashIn = "maria";
         const value = 10;
@@ -35,7 +35,7 @@ describe("Testing the middleware authentication with the transaction routes", ()
         const transactionData = {usernameCashIn, value}
 
         // Create a new transaction
-        const response = await request(app).post("/api/transactions/").send(transactionData).set("Authorization", `Bearer ${"token"}`);
+        const response = await request(app).post("/transactions/").send(transactionData).set("Authorization", `Bearer ${"token"}`);
 
         expect(response.status).toBe(400);
         expect(response.body).toStrictEqual({
@@ -50,10 +50,10 @@ describe("Testing the middleware authentication with the transaction routes", ()
 
         const userData = {username, password};
 
-        await request(app).post("/api/create/").send(userData);
+        await request(app).post("/create/").send(userData);
 
         // Login user
-        await (await request(app).post("/api/login/").send(userData)).body.token;
+        await (await request(app).post("/login/").send(userData)).body.token;
 
         const usernameCashIn = "maria";
         const value = 10;
@@ -61,7 +61,7 @@ describe("Testing the middleware authentication with the transaction routes", ()
         const transactionData = {usernameCashIn, value};
 
         // Create a new transaction
-        const response = await request(app).post("/api/transactions/").send(transactionData).set("Authorization", `Bearer`);
+        const response = await request(app).post("/transactions/").send(transactionData).set("Authorization", `Bearer`);
 
         expect(response.status).toBe(400);
         expect(response.body).toStrictEqual({
@@ -76,10 +76,10 @@ describe("Testing the middleware authentication with the transaction routes", ()
 
         const userData = {username, password};
 
-        await request(app).post("/api/create/").send(userData);
+        await request(app).post("/create/").send(userData);
 
         // Login user
-        await (await request(app).post("/api/login/").send(userData)).body.token;
+        await (await request(app).post("/login/").send(userData)).body.token;
 
         const usernameCashIn = "maria";
         const value = 10;
@@ -87,7 +87,7 @@ describe("Testing the middleware authentication with the transaction routes", ()
         const transactionData = {usernameCashIn, value}
 
         // Create a new transaction
-        const response = await request(app).post("/api/transactions/").send(transactionData);
+        const response = await request(app).post("/transactions/").send(transactionData);
 
         expect(response.status).toBe(400);
         expect(response.body).toStrictEqual({
@@ -102,10 +102,10 @@ describe("Testing the middleware authentication with the transaction routes", ()
 
         const userData = {username, password};
 
-        await request(app).post("/api/create/").send(userData);
+        await request(app).post("/create/").send(userData);
 
         // Login user
-        await (await request(app).post("/api/login/").send(userData)).body.token;
+        await (await request(app).post("/login/").send(userData)).body.token;
 
         const start_date = "2022-11-16";
         const end_date = "2022-11-18";
@@ -113,7 +113,7 @@ describe("Testing the middleware authentication with the transaction routes", ()
         const transactionFilterData = {start_date, end_date};
 
         // Filter transactions
-        const response = await request(app).post("/api/transactions/filter/").send(transactionFilterData).set("Authorization", `Bearer ${"token"}`);
+        const response = await request(app).post("/transactions/filter/").send(transactionFilterData).set("Authorization", `Bearer ${"token"}`);
 
         expect(response.status).toBe(400);
         expect(response.body).toStrictEqual({
@@ -128,10 +128,10 @@ describe("Testing the middleware authentication with the transaction routes", ()
 
         const userData = {username, password};
 
-        await request(app).post("/api/create/").send(userData);
+        await request(app).post("/create/").send(userData);
 
         // Login user
-        await (await request(app).post("/api/login/").send(userData)).body.token;
+        await (await request(app).post("/login/").send(userData)).body.token;
 
         const start_date = "2022-11-16";
         const end_date = "2022-11-18";
@@ -139,7 +139,7 @@ describe("Testing the middleware authentication with the transaction routes", ()
         const transactionFilterData = {start_date, end_date};
 
         // Filter transactions
-        const response = await request(app).post("/api/transactions/filter/").send(transactionFilterData).set("Authorization", `Bearer`);
+        const response = await request(app).post("/transactions/filter/").send(transactionFilterData).set("Authorization", `Bearer`);
 
         expect(response.status).toBe(400);
         expect(response.body).toStrictEqual({
@@ -154,10 +154,10 @@ describe("Testing the middleware authentication with the transaction routes", ()
 
         const userData = {username, password};
 
-        await request(app).post("/api/create/").send(userData);
+        await request(app).post("/create/").send(userData);
 
         // Login user
-        await (await request(app).post("/api/login/").send(userData)).body.token;
+        await (await request(app).post("/login/").send(userData)).body.token;
 
         const start_date = "2022-11-16";
         const end_date = "2022-11-18";
@@ -165,7 +165,7 @@ describe("Testing the middleware authentication with the transaction routes", ()
         const transactionFilterData = {start_date, end_date};
 
         // Filter transactions
-        const response = await request(app).post("/api/transactions/filter/").send(transactionFilterData);
+        const response = await request(app).post("/transactions/filter/").send(transactionFilterData);
 
         expect(response.status).toBe(400);
         expect(response.body).toStrictEqual({

@@ -32,9 +32,3 @@ export class UserController {
     }
 
 }
-
-// #swagger.requestBody = {
-//     in: 'body',
-//     description: 'Add a user, the username must contain at least eight characters, the password must contain at least eight characters, have a number and a capital letter.',
-//     schema: { $ref: '#/definitions/User' }
-// }

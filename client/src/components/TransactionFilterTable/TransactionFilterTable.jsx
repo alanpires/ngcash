@@ -50,13 +50,7 @@ export default function TransactionFilterTable({
     transactions = transactionsFilter.cashOut;
   }
 
-  function subtotal(items) {
-    return items.map(({ value }) => value).reduce((sum, i) => sum + i, 0);
-  }
-
   const rowsList = rows(transactions);
-
-  const invoiceSubtotal = subtotal(rowsList);
 
   return (
     <div>
@@ -86,16 +80,8 @@ export default function TransactionFilterTable({
               {row.type === 'cashIn' ? (<TableCell align="right" style={{ color: "green" }}>{row.value}</TableCell>) : (<TableCell align="right" style={{ color: "red" }}>{row.value}</TableCell>)}
             </TableRow>
           ))}
-           <TableRow>
-            <TableCell rowSpan={2}/>
-            <TableCell rowSpan={2}/>
-            <TableCell style={{ fontWeight: "bold" }}>Subtotal</TableCell>
-            <TableCell/>
-            <TableCell align="right" style={{ fontWeight: "bold" }}>{ccyFormat(invoiceSubtotal)}</TableCell>
-          </TableRow>
           <TableRow>
-            <TableCell style={{ fontWeight: "bold" }}>Saldo atual</TableCell>
-            <TableCell/>
+            <TableCell colSpan={4} style={{ fontWeight: "bold" }}>Saldo atual</TableCell>
             <TableCell align="right" style={{ fontWeight: "bold" }}>{ccyFormat(invoiceTotal)}</TableCell>
           </TableRow>
         </TableBody>

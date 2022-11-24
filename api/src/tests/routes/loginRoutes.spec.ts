@@ -24,10 +24,10 @@ describe("Testing the login routes", () => {
 
         const userData = {username, password};
 
-        await request(app).post("/api/create/").send(userData);
+        await request(app).post("/create").send(userData);
 
         // Login user
-        const response = await request(app).post("/api/login/").send(userData);
+        const response = await request(app).post("/login").send(userData);
 
         expect(response.status).toBe(200);
         expect(response.body).toHaveProperty("token");
@@ -40,10 +40,10 @@ describe("Testing the login routes", () => {
 
         const userData = {username, password};
 
-        await request(app).post("/api/create/").send(userData);
+        await request(app).post("/create").send(userData);
 
         // Login user
-        const response = await request(app).post("/api/login/").send({username: "carla", password});
+        const response = await request(app).post("/login").send({username: "carla", password});
 
         expect(response.status).toBe(400);
         expect(response.body).toStrictEqual({
@@ -59,10 +59,10 @@ describe("Testing the login routes", () => {
 
         const userData = {username, password};
 
-        await request(app).post("/api/create/").send(userData);
+        await request(app).post("/create").send(userData);
 
         // Login user
-        const response = await request(app).post("/api/login/").send({username, password: "1234"});
+        const response = await request(app).post("/login").send({username, password: "1234"});
 
         expect(response.status).toBe(400);
         expect(response.body).toStrictEqual({
@@ -72,7 +72,7 @@ describe("Testing the login routes", () => {
     });
 
     test("It should fail to create the user without any information in the request body", async () => {
-        const response = await request(app).post("/api/login/").send({})
+        const response = await request(app).post("/login").send({})
 
         expect(response.status).toBe(400);
         expect(response.body).toStrictEqual({

@@ -105,12 +105,5 @@ export const getAllTransactions = async (accountId: string) => {
         allTransactions.push(transactionsCashIn[i])
     }
 
-    console.log("allTransactions",allTransactions)
-
-    // allTransactions.sort((a, b) => {
-    //     return a.createdAt < b.createdAt ? -1 : a.createdAt > b.createdAt ? 1 : 0;
-    // })
-
-
     return allTransactions
 }

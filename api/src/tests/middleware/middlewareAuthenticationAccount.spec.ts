@@ -24,13 +24,13 @@ describe("Testing the middleware authentication with the account routes", () => 
 
         const userData = {username, password};
 
-        await request(app).post("/api/create/").send(userData);
+        await request(app).post("/create/").send(userData);
 
         // Login user
-        await (await request(app).post("/api/login/").send(userData)).body.token;
+        await (await request(app).post("/login/").send(userData)).body.token;
 
         // List accounts
-        const response = await request(app).get("/api/accounts/").set("Authorization", `Bearer ${"token"}`);
+        const response = await request(app).get("/accounts/").set("Authorization", `Bearer ${"token"}`);
 
         expect(response.status).toBe(400);
         expect(response.body).toStrictEqual({
@@ -45,13 +45,13 @@ describe("Testing the middleware authentication with the account routes", () => 
 
         const userData = {username, password};
 
-        await request(app).post("/api/create/").send(userData);
+        await request(app).post("/create/").send(userData);
 
         // Login user
-        await (await request(app).post("/api/login/").send(userData)).body.token;
+        await (await request(app).post("/login/").send(userData)).body.token;
 
         // List accounts
-        const response = await request(app).get("/api/accounts/").set("Authorization", `Bearer`);
+        const response = await request(app).get("/accounts/").set("Authorization", `Bearer`);
 
         expect(response.status).toBe(400);
         expect(response.body).toStrictEqual({
@@ -66,13 +66,13 @@ describe("Testing the middleware authentication with the account routes", () => 
 
         const userData = {username, password};
 
-        await request(app).post("/api/create/").send(userData);
+        await request(app).post("/create/").send(userData);
 
         // Login user
-        await (await request(app).post("/api/login/").send(userData)).body.token;
+        await (await request(app).post("/login/").send(userData)).body.token;
 
         // List accounts
-        const response = await request(app).get("/api/accounts/");
+        const response = await request(app).get("/accounts/");
 
         expect(response.status).toBe(400);
         expect(response.body).toStrictEqual({
